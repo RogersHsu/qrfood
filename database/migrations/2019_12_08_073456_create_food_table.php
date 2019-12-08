@@ -13,8 +13,9 @@ class CreateFoodTable extends Migration
      */
     public function up()
     {
-        Schema::table('food', function (Blueprint $table) {
+        Schema::create('food', function (Blueprint $table) {
             //
+            $table->string('name');
         });
     }
 
