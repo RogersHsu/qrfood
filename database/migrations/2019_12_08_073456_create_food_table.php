@@ -13,6 +13,7 @@ class CreateFoodTable extends Migration
      */
     public function up()
     {
+        
         Schema::create('food', function (Blueprint $table) {
             //
             $table->increments('fdId')->comment('食物ID');

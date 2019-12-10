@@ -11,7 +11,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
+       // $this->call(FoodTableSeeder::class);
+        
+        $this->call(UsersTableSeeder::class);
         DB::table('food')->insert([
             'fdName' => str_random(10),
             'gram' => (float)rand() / (float)getrandmax(),
