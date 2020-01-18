@@ -1,33 +1,13 @@
-<!-- 側邊攔 -->
-<div class="sidebar" data-color="purple" data-background-color="white">
-      <!--
-      Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
-
-      Tip 2: you can also add an image using data-image tag
-      -->
-  <div class="logo">
-    <a href="http://www.creative-tim.com" class="simple-text logo-mini">
-      CT
-    </a>
-    <a href="http://www.creative-tim.com" class="simple-text logo-normal">
-      Creative Tim
-    </a>
-  </div>
-  <div class="sidebar-wrapper">
-    <ul class="nav">
-      <li class="nav-item active  ">
-        <a class="nav-link" href="#0">
-          <i class="material-icons">dashboard</i>
-            <p>Dashboard</p>
-        </a>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link" href="#0">
-          <i class="material-icons">dashboard</i>
-            <p>Dashboard</p>
-        </a>
-      </li>
-          <!-- your sidebar here -->
-      </ul>
+ <!-- Sidebar -->
+ <div class="bg-light border-right" id="sidebar-wrapper">
+      <div class="sidebar-heading">後台</div>
+      <div class="list-group list-group-flush">
+        <a href="#" class="list-group-item list-group-item-action bg-light">食物</a>
+        <a href="#" class="list-group-item list-group-item-action bg-light">Shortcuts</a>
+        <a href="#" class="list-group-item list-group-item-action bg-light">Overview</a>
+        <a href="#" class="list-group-item list-group-item-action bg-light">Events</a>
+        <a href="#" class="list-group-item list-group-item-action bg-light">Profile</a>
+        <a href="#" class="list-group-item list-group-item-action bg-light">Status</a>
+      </div>
     </div>
-  </div>
+    <!-- /#sidebar-wrapper -->

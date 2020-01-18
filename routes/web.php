@@ -12,6 +12,13 @@
 */
 
 Route::get('/', function () {
-    return view('backend/lauoyts');
+    return view('backend/main');
     
 });
+
+//exercise
+Route::get('/qqq',function(){
+    return view('qqq');
+});
+Route::post('/exercise/create','exerciseController@create');
+Route::get('/food','Admin\FoodController@showAll');
