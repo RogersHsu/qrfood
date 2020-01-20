@@ -22,3 +22,4 @@ Route::get('/qqq',function(){
 });
 Route::post('/exercise/create','exerciseController@create');
 Route::get('/food','Admin\FoodController@showAll');
+Route::delete('/food','Admin\FoodController@delete');

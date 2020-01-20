@@ -12,4 +12,8 @@ class FoodController extends Controller
         $Food = json_decode($Food,true);
         return $Food;
     }
+    public function delete(Request $request){
+         $postJsonData = $request->getContent();
+        return $postJsonData;
+    }
 }
