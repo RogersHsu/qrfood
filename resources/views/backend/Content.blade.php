@@ -3,25 +3,14 @@
     <table id="example" class="ui celled table">
       <thead>
         <tr>
-            <th>fdId</th>
-            <th>rsId</th>
-            <th>fdName</th>
-            <th>cId</th>
+            <th>刪除</th>
+            <th>餐廳名稱</th>
+            <th>食物名稱</th>
+            <th>分類</th>
             <th>克數</th>
             <th>熱量</th>
             <th>編輯</th>
-            <!-- <th>蛋白質</th>
-            <th>脂肪(總)</th>
-            <th>飽和脂肪</th>
-            <th>反式脂肪</th>
-            <th>膽固醇(毫克)</th>
-            <th>碳水化合物(總)</th>
-            <th>糖</th>
-            <th>膳食纖維</th>
-            <th>鈉(毫克)</th>
-            <th>鈣(毫克)</th>
-            <th>鉀(毫克)</th>
-            <th>鐵(毫克)</th> -->
+
         </tr>
     </thead>
     <tbody>
@@ -31,7 +20,7 @@
     </div>
     <!-- Edit Modal -->
   <div class="modal fade" id="Modal_edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-dialog modal-sm" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">修改確認</h5>
@@ -42,29 +31,26 @@
       <div class="modal-body" id="del_tabledata_comfirm">
       <form action="/action_page.php">
   <div class="form-group">
-    <label for="email">fdId</label>
-    <input type="text" class="form-control" placeholder="Enter fdId" id="modal_edit_fdId">
+    <label for="email">餐廳名稱</label>
+    <input type="text" class="form-control" placeholder="Enter fdId" id="modal_edit_rsName">
   </div>
   <div class="form-group">
-    <label for="pwd">rsId</label>
-    <input type="text" class="form-control" placeholder="Enter rsId" id="modal_edit_rsId">
+    <label for="pwd">食物名稱</label>
+    <input type="text" class="form-control" placeholder="Enter rsId" id="modal_edit_fdName">
   </div>
   <div class="form-group">
-    <label for="pwd">fdName</label>
-    <input type="text" class="form-control" placeholder="Enter fdName" id="modal_edit_fdName">
+    <label for="pwd">分類</label>
+    <input type="text" class="form-control" placeholder="Enter fdName" id="modal_edit_cName">
   </div>
   <div class="form-group">
-    <label for="pwd">cId</label>
-    <input type="text" class="form-control" placeholder="Enter cId" id="modal_edit_cId">
+    <label for="pwd">克數</label>
+    <input type="text" class="form-control" placeholder="Enter cId" id="modal_edit_gram">
   </div>
   <div class="form-group">
-    <label for="pwd">gram</label>
-    <input type="text" class="form-control" placeholder="Enter gram" id="modal_edit_gram">
+    <label for="pwd">熱量</label>
+    <input type="text" class="form-control" placeholder="Enter gram" id="modal_edit_calorie">
   </div>
-  <div class="form-group">
-    <label for="pwd">calorie</label>
-    <input type="text" class="form-control" placeholder="Enter calorie" id="modal_edit_calorie">
-  </div>
+  
   
 </form>
       </div>

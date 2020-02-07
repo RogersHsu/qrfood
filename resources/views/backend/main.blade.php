@@ -76,23 +76,30 @@
 <!--Datatable Script -->
 <script>
   $(document).ready(function(){
-    var arr = new Array();
-    //繪製DataTable
-    var table = $('#example').DataTable({
+    
+    
+     $.ajax({
+      'type':"GET",
+      'dataType':'JSON',
+      'url':"http://127.0.0.1:8000/food",
+      'success':function(response){
+        var fooddata = response.food;
+        console.log(fooddata);
+        //繪製DataTable
+        var table = $('#example').DataTable({
       "bInfo" : false, //取消左下顯示Entries
-      ajax: {
-        url:"http://127.0.0.1:8000/food",
-        dataSrc:''
-      },
-      "columns" : [
+      
+      data : fooddata ,
+      columns : [
           {
-            "data" : "fdId"
+            "data" : null,
+            defaultContent:"<input name = 'checkbox' type='checkbox'>",
           }, {
-            "data" : "rsId"
+            "data" : "restaurant[0].rsName"
           }, {
             "data" : "fdName"
           }, {
-            "data" : "cId"
+            "data" : "category[0].cName"
           }, {
             "data" : "gram"
           }, {
@@ -101,50 +108,70 @@
             "data" : null,
             defaultContent:"<button class='btn btn-success' data-toggle='modal' data-target='#Modal_edit'>修改</button>",
           }
-        ],
-      });
-      
+      ],
+    });
       var edit_row ; //要修改內容的row
       //點選修改按鈕
       $('#example tbody').on('click','button',function(){
         //設定表單值
         edit_row = table.row($(this).parent().parent());
         var data = edit_row.data();
-        $('#modal_edit_fdId').attr('value',data['fdId']);
-        $('#modal_edit_rsId').attr('value',data['rsId']);
+
+        $('#modal_edit_rsName').attr('value',data['restaurant'][0]['rsName']);
         $('#modal_edit_fdName').attr('value',data['fdName']);
-        $('#modal_edit_cId').attr('value',data['cId']);
+        $('#modal_edit_cName').attr('value',data['category'][0]['cName']);
         $('#modal_edit_gram').attr('value',data['gram']);
         $('#modal_edit_calorie').attr('value',data['calorie']);
+        
         table.row($(this).parent().parent()).data(data).draw();
-        console.log(data);
       });
       //提交修改內容
       $('#btn_edit_submit').on('click',function(){
         var data = edit_row.data();
-        data['fdId'] = $('#modal_edit_fdId').val();
-        data['rsId'] = $('#modal_edit_rsId').val();
+        data['rsName'] = $('#modal_edit_rsName').val();
         data['fdName'] = $('#modal_edit_fdName').val();
-        data['cId'] = $('#modal_edit_cId').val();
+        data['cName'] = $('#modal_edit_cName').val();
         data['gram'] = $('#modal_edit_gram').val();
         data['calorie'] = $('#modal_edit_calorie').val();
-        edit_row.data(data).draw(); //重新繪製
-        $('#Modal_edit').modal('hide');
+        $.ajax({
+          url : 'http://127.0.0.1:8000/food',
+          headers : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+          type : 'PUT',
+          data:JSON.stringify(data),
+          contentType: "application/json;charset=utf-8",
+          success : function(dataa) {
+            console.log((data));
+            edit_row.data(data).draw(); //重新繪製
+            $('#Modal_edit').modal('hide');
+           
+          }
+        });
+
+       
       });
-    //點選欄位反白
-    $('#example tbody').on( 'click','tr', function (){
-      $(this).toggleClass('selected');
-    });
+
     //點選刪除欄位
+    var data_json = new Array(); //要傳給後端的json資料
+    var checkbox_checked_row_index = []; //已勾選欄位索引
+
     $('#btn_nav_del').click( function () {
-      var object = new Object();
-      var data = table.rows('.selected').data().toArray();
+      var checkbox = $('[name="checkbox"]');
+      
+      for(var key in checkbox){
+        if(checkbox[key].checked == true)
+          checkbox_checked_row_index.push(parseInt(key));
+      }
+      var data = table.rows(checkbox_checked_row_index).data();
       
       for(var key in data){
-          object.fdId = data[key]['fdId'];
-          arr = arr.concat(object); 
-          object = new Object();
+        if(isNaN(key)){
+          break;
+        }
+        var object = new Object();
+        object.fdId = data[key]['fdId'];
+        data_json = data_json.concat(object);   
       }
+      console.log(checkbox_checked_row_index);
       //彈跳視窗上的DataTable
       $('#modal_del_datatable').DataTable( {
         data: data,
@@ -165,23 +192,32 @@
           }, 
         ]
       });
-    });
-    //確認刪除
-    $('#btn_del_submit').on("click",function(){
+      //確認刪除
+     });
+     $('#btn_del_submit').on("click",function(){
         $.ajax({
           url : 'http://127.0.0.1:8000/food',
           headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
           type : 'delete',
-          data:JSON.stringify(arr),
+          data:JSON.stringify(data_json),
           contentType: "application/json;charset=utf-8",
           success : function(data) {
-            console.log(data);
-            table.rows('.selected').remove().draw();
+            table.rows(checkbox_checked_row_index).remove().draw();
+            checkbox_checked_row_index = [];
             $('#exampleModal').modal('hide');
           }
         });
-        
+     });
+      },
+      
     });
+  
+   
+    
+    
+      
+    
+     
 });
 </script>
 </body>
