@@ -3,11 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class food extends Model
 {   
     protected $table = 'food';
     protected $primaryKey = 'fdId';
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
 
     public function restaurant(){
         return $this->hasMany('App\restaurant','rsId','rsId');

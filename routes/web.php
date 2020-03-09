@@ -13,7 +13,7 @@
 
 Route::get('/', function () {
     return view('backend/main');
-    
+
 });
 
 //exercise
@@ -24,3 +24,6 @@ Route::post('/exercise/create','exerciseController@create');
 Route::get('/food','Admin\FoodController@showAll');
 Route::put('/food','Admin\FoodController@update');
 Route::delete('/food','Admin\FoodController@delete');
+
+Route::get('/api/admin/getAllrestaurant','API\Admin\admin_food@getRestaurantlocation');
+Route::post('/api/admin/getRestaurantNameByLocation','API\Admin\admin_food@getRestaurantNameByLocation');
