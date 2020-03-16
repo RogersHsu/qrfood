@@ -25,5 +25,6 @@ Route::get('/food','Admin\FoodController@showAll');
 Route::put('/food','Admin\FoodController@update');
 Route::delete('/food','Admin\FoodController@delete');
 
-Route::get('/api/admin/getAllrestaurant','API\Admin\admin_food@getRestaurantlocation');
-Route::post('/api/admin/getRestaurantNameByLocation','API\Admin\admin_food@getRestaurantNameByLocation');
+Route::get('/api/admin/location','API\Admin\admin_food@getRestaurantlocation');
+Route::post('/api/admin/restaurant','API\Admin\admin_food@getRestaurantNameByLocation');
+Route::get('/api/admin/restaurant','API\Admin\admin_food@restaurant');

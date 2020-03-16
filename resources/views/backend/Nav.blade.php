@@ -12,16 +12,17 @@
                     選擇食堂
                 </a>
                 <div class="dropdown-menu dropdown-menu-right"  aria-labelledby="navbarDropdown" >
+                    {{--append location data in JS--}}
                 </div>
             </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            <li class="nav-item dropdown" id = "navbar_selectRestaurant">
+                <a class="nav-link dropdown-toggle" href="#" id="aaa" role="button" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
                     選擇餐廳
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" id="vvv" href="#">靜園e</a>
-                    <a class="dropdown-item" href="#">宜e園</a>
+                    {{--append restaurant data in JS--}}
+                </div>
             </li>
             <li class="nav-item">
                 <button class="btn btn-success">搜尋</button>

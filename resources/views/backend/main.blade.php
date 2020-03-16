@@ -73,42 +73,79 @@
     //     $("#chooseRestaurant button").text(selText);
     // });
 </script>
-<!--Datatable Script -->
+
 <script>
     $(document).ready(function () {
+
+        $("#navbar_selectRestaurant a").css("pointer-events","none");//can't select restaurant before seleted location.
+
         //獲取所有餐廳位置(location)，更新Nav上「選擇食堂的資料」
         $.ajax({
-            'type': "GET",
-            'dataType': 'JSON',
-            'url': "http://127.0.0.1:8000/api/admin/getAllrestaurant",
-            'success': function (response) {
-                var response = JSON.parse(response);
+            type : 'GET',
+            dataType : 'JSON',
+            url : 'http://localhost/api/admin/restaurant',
+            success : function(response){
 
-                for(var key in response.data){
-                    var data = response.data[key].location;
+                renderLocationList(response);
 
-                    var str =  "<span "+
-                                "class = \"dropdown-item nav_selectLocation_item\" "+
-                                "id = \"aaa\" >" +
+                linstenSelectLocation(response);
+                listenSelectRestaurant(response);
+            }
+        });
 
-                                    data +
-                                "</span>";
-                    $("#navbar_selectLocation div").append(str);
+        function renderLocationList(response){
+            for (var key in response.data) {
+                var data = response.data[key].location;
+                var str =
+                    "<span " +
+                    "class = \"dropdown-item nav_selectLocation_item\" >" +
+                    data +
+                    "</span>";
+                $("#navbar_selectLocation div").append(str);
+            }
+        };
+
+        function linstenSelectLocation(response){
+            $('#navbar_selectLocation').on("click", ".nav_selectLocation_item", function () {
+                $("#navbar_selectLocation a").html($(this).text());
+                $("#navbar_selectRestaurant a").css("pointer-events","");
+
+                renderRestaurantList(response);
+            });
+        };
+
+        function listenSelectRestaurant(response){
+            $('#navbar_selectRestaurant').on("click", ".nav_selectRestaurant_item", function () {
+                $("#navbar_selectRestaurant a").html($(this).text());
+            });
+        };
+
+        function renderRestaurantList(response){
+            $('#navbar_selectRestaurant div').empty(); //reset restuarant list
+            var location = $("#navbar_selectLocation a").text();
+            for( var key in response.data){
+                if(location == response.data[key].location){
+                    for(var res in response.data[key].restaurant){
+                        var data = response.data[key].restaurant[res].rsName;
+                        var str = "<span " +
+                            "class = \"dropdown-item nav_selectRestaurant_item\" >" +
+                            data +
+                            "</span>";
+                        $("#navbar_selectRestaurant div").append(str);
+                    }
+                    $("#navbar_selectRestaurant a").html(response.data[key].restaurant[0].rsName); //default selectRestaurant
                 }
+            }
+        };
 
-            },
-        });
-        // $("#aaa").click(function(){
-        //     console.log("aa");
-        // });
-        $('#navbar_selectLocation').on("click",".nav_selectLocation_item",function(){
-          $("#navbar_selectLocation a").html($(this).text());
-            console.log($(this).text());
-        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
         $.ajax({
             'type': "GET",
             'dataType': 'JSON',
-            'url': "http://127.0.0.1:8000/food",
+            'url': "http://localhost/food",
             'success': function (response) {
                 var fooddata = response;
                 //繪製DataTable
@@ -236,7 +273,7 @@
                 });
                 $('#btn_del_submit').on("click", function () {
                     $.ajax({
-                        url: 'http://127.0.0.1:8000/food',
+                        url: 'http://localhost/food',
                         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                         type: 'delete',
                         data: JSON.stringify(data_json),
