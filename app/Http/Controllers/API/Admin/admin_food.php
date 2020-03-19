@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\food;
 use App\restaurant;
-
+use App\category;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use phpDocumentor\Reflection\Types\Object_;
@@ -25,7 +25,7 @@ class admin_food extends Controller
         $location = restaurant::select('location')->groupBy('location')->get();
 
         $this->response['data'] = $location;
-        return response()->json(json_encode($this->response));
+        return response()->json($this->response);
 //location: "one ":
     }
     public function getRestaurantNameByLocation(Request $request){
@@ -55,7 +55,20 @@ class admin_food extends Controller
 
         $this->response['code'] = 1;
         $this->response['message'] = "success";
+
         return json_encode($this->response);
+    }
+
+    public function getAllCategory()
+    {
+
+        $category = category::select('cId', 'cName')->get();
+
+        $this->response['code'] = 1;
+        $this->response['message'] = "success";
+        $this->response['data'] = $category;
+
+        return response()->json($this->response);
     }
 
 }

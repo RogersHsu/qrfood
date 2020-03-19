@@ -71,7 +71,8 @@ class FoodController extends Controller
             $Food->cId = $updateData->cId;
             $Food->gram = $updateData->gram;
             $Food->calorie = $updateData->calorie;
-            $Food->save();
+            $test = $Food->save();
+            $data['data'] = $test;
             return json_encode($data);
         } else {
             $data['status'] = 0;
@@ -87,9 +88,8 @@ class FoodController extends Controller
         foreach($postJsonData as $data){
             array_push($arr,$data->fdId);
         }
-        food::destroy($arr);
 
-        //$deleteRow = food::where('fdId', '=', $arr)->delete();
+        food::destroy($arr);
 
         return $arr;
     }

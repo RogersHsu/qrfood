@@ -9,6 +9,7 @@ class food extends Model
 {   
     protected $table = 'food';
     protected $primaryKey = 'fdId';
+
     use SoftDeletes;
     protected $dates = ['deleted_at'];
 

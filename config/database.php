@@ -52,6 +52,7 @@ return [
             'prefix' => '',
             'strict' => true,
             'engine' => null,
+            //UNIX_SOCKET= /var/run/mysqld/mysqlx.sock
         ],
 
         'pgsql' => [

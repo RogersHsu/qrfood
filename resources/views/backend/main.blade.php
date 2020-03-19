@@ -62,28 +62,22 @@
         $("#wrapper").toggleClass("toggled");
     });
 </script>
-<!-- 選擇食堂/餐廳 Script -->
-<script>
-    // $("#chooseLocation a").click(function () {
-    //     var selText = $(this).text();
-    //     $("#chooseLocation button").text(selText);
-    // });
-    // $("#chooseRestaurant a").click(function () {
-    //     var selText = $(this).text();
-    //     $("#chooseRestaurant button").text(selText);
-    // });
+
+{{--denfine APP_URL--}}
+<script type="text/javascript">
+    var APP_URL ={!! json_encode(url('/')) !!};
 </script>
 
+{{--use to handle nav selectLocation and selectRestaurant.--}}
 <script>
     $(document).ready(function () {
 
         $("#navbar_selectRestaurant a").css("pointer-events","none");//can't select restaurant before seleted location.
 
-        //獲取所有餐廳位置(location)，更新Nav上「選擇食堂的資料」
         $.ajax({
             type : 'GET',
             dataType : 'JSON',
-            url : 'http://localhost/api/admin/restaurant',
+            url: APP_URL + '/api/admin/restaurant',
             success : function(response){
 
                 renderLocationList(response);
@@ -140,12 +134,13 @@
 
     });
 </script>
+
 <script>
     $(document).ready(function () {
         $.ajax({
             'type': "GET",
             'dataType': 'JSON',
-            'url': "http://localhost/food",
+            'url': APP_URL + "/food",
             'success': function (response) {
                 var fooddata = response;
                 //繪製DataTable
@@ -199,10 +194,9 @@
                     JsonData['cName'] = $('#modal_edit_cName').val();
                     JsonData['gram'] = $('#modal_edit_gram').val();
                     JsonData['calorie'] = $('#modal_edit_calorie').val();
-                   // console.log(JSON.stringify(JsonData));
 
                     $.ajax({
-                        url: 'http://127.0.0.1:8000/food',
+                        url: APP_URL + '/food',
                         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                         type: 'PUT',
                         data: JSON.stringify(JsonData),
@@ -217,6 +211,7 @@
                                 edit_row_data['calorie'] = $('#modal_edit_calorie').val();
                                 edit_row.data(edit_row_data).draw(); //重新繪製
                                 $('#Modal_edit').modal('hide');
+                                console.log(response);
                             } else {
                                 alert(response.message);
                             }
