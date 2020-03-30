@@ -20,12 +20,26 @@ class FoodController extends Controller
             $arr = [];
             $arr['fdId'] = $food['fdId'];
             $arr['fdName'] = $food['fdName'];
-            $arr['gram'] = $food['gram'];
-            $arr['calorie'] = $food['calorie'];
             $arr['rsId'] = $food['restaurant'][0]['rsId'];
             $arr['rsName'] = $food['restaurant'][0]['rsName'];
             $arr['cId'] = $food['category'][0]['cId'];
             $arr['cName'] = $food['category'][0]['cName'];
+            //營養素
+            $arr['gram'] = $food['gram'];
+            $arr['calorie'] = $food['calorie'];
+            $arr['protein'] = $food['protein'];
+            $arr['fat'] = $food['fat'];
+            $arr['saturatedFat'] = $food['saturatedFat'];
+            $arr['transFat'] = $food['transFat'];
+            $arr['cholesterol'] = $food['cholesterol'];
+            $arr['carbohydrate'] = $food['carbohydrate'];
+            $arr['sugar'] = $food['sugar'];
+            $arr['dietaryFiber'] = $food['dietaryFiber'];
+            $arr['sodium'] = $food['sodium'];
+            $arr['calcium'] = $food['calcium'];
+            $arr['potassium'] = $food['potassium'];
+            $arr['ferrum'] = $food['ferrum'];
+
             array_push($array,$arr);
         }
         

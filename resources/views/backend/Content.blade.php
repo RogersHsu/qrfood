@@ -1,14 +1,15 @@
 <div class = "container-fluid">
     <div id="tableArea" class="container-fluid" style="width:100% ;">
-    <table id="example" class="ui celled table">
+        <table id="exacmple" class="ui celled table">
       <thead>
         <tr>
             <th>刪除</th>
             <th>餐廳名稱</th>
-            <th>食物名稱</th>
+            <th>食r物名稱</th>
             <th>分類</th>
             <th>克數</th>
             <th>熱量</th>
+            <th>data</th>
             <th>編輯</th>
 
         </tr>

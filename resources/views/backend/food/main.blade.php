@@ -117,14 +117,39 @@
                                 "data": "calorie"
                             }, {
                                 "data": null,
-                                defaultContent: "<button class='btn btn-success' data-toggle='modal' data-target='#Modal_edit'>修改</button>",
+                                defaultContent: "<button id = 'view' class='btn btn-success' data-toggle='modal' data-target='#Modal_view'>查看</button>",
+                            }, {
+                                "data": null,
+                                defaultContent: "<button id = 'edit' class='btn btn-success' data-toggle='modal' data-target='#Modal_edit'>修改</button>",
                             }
                         ],
                     });
+                    console.log(table);
+                    var view_row; //被查看的那行
+                    var view_row_data;
+                    $('#example tbody').on('click', '#view', function () {
+                        view_row = table.row($(this).parent().parent());
+                        view_row_data = view_row.data();
+                        $('#modal_view_gram').attr('value', view_row_data['gram']);
+                        $('#modal_view_calorie').attr('value', view_row_data['calorie']);
+                        $('#modal_view_protein').attr('value', view_row_data['protein']);
+                        $('#modal_view_fat').attr('value', view_row_data['fat']);
+                        $('#modal_view_saturatedFat').attr('value', view_row_data['saturatedFat']);
+                        $('#modal_view_transFat').attr('value', view_row_data['transFat']);
+                        $('#modal_view_cholesterol').attr('value', view_row_data['cholesterol']);
+                        $('#modal_view_carbohydrate').attr('value', view_row_data['carbohydrate']);
+                        $('#modal_view_sugar').attr('value', view_row_data['sugar']);
+                        $('#modal_view_dietaryFiber').attr('value', view_row_data['dietaryFiber']);
+                        $('#modal_view_sodium').attr('value', view_row_data['sodium']);
+                        $('#modal_view_calcium').attr('value', view_row_data['calcium']);
+                        $('#modal_view_potassium').attr('value', view_row_data['potassium']);
+                        $('#modal_view_ferrum').attr('value', view_row_data['ferrum']);
+                    });
+
                     var edit_row; //被編輯的那行
                     var edit_row_data; //被編輯那行的資料
                     //點選修改按鈕
-                    $('#example tbody').on('click', 'button', function () {
+                    $('#example tbody').on('click', '#edit', function () {
                         //設定表單值
                         edit_row = table.row($(this).parent().parent());
                         edit_row_data = edit_row.data();
@@ -134,7 +159,6 @@
                         $('#modal_edit_cName').attr('value', edit_row_data['cName']);
                         $('#modal_edit_gram').attr('value', edit_row_data['gram']);
                         $('#modal_edit_calorie').attr('value', edit_row_data['calorie']);
-
                     });
                     //提交修改內容
                     $('#btn_edit_submit').on('click', function () {
