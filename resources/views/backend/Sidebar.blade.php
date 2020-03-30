@@ -3,7 +3,7 @@
       <div class="sidebar-heading">後台</div>
       <div class="list-group list-group-flush">
         <a href="#" class="list-group-item list-group-item-action bg-light">食物</a>
-        <a href="#" class="list-group-item list-group-item-action bg-light">Shortcuts</a>
+          <a href="#" class="list-group-item list-group-item-action bg-light">Restaurant</a>
         <a href="#" class="list-group-item list-group-item-action bg-light">Overview</a>
         <a href="#" class="list-group-item list-group-item-action bg-light">Events</a>
         <a href="#" class="list-group-item list-group-item-action bg-light">Profile</a>

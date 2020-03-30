@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('backend/main');
+    return view('backend/food/main');
 
 });
 
