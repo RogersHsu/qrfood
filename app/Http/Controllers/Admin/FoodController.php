@@ -12,11 +12,15 @@ use Validator;
 
 class FoodController extends Controller
 {
+    /**
+     * 取得所有所有食物的資料
+     * @return array
+     */
     public function showAll(){
         $array = [];
-        
-        $Food = food::with(['restaurant','category'])->get();
-        foreach($Food as $food){
+
+        $result = food::with(['restaurant', 'category'])->get();
+        foreach ($result as $food) {
             $arr = [];
             $arr['fdId'] = $food['fdId'];
             $arr['fdName'] = $food['fdName'];
@@ -44,7 +48,13 @@ class FoodController extends Controller
         }
         
         return $array;
-    }   
+    }
+
+    /**
+     * 更新該筆食物的數據
+     * @param Request $request 前端傳來該筆資料的更新數據
+     * @return string
+     */
     public function update(Request $request){
         $postJsonData = $request->getContent();
         //做資料驗證
@@ -95,6 +105,11 @@ class FoodController extends Controller
         }
     }
 
+    /**
+     * 刪除該筆資料
+     * @param Request $request 前端傳來該筆資料的數據
+     * @return array
+     */
     public function delete(Request $request){
         $postJsonData = $request->getContent();
         $postJsonData = json_decode($postJsonData);

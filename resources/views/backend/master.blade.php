@@ -10,15 +10,17 @@
     <title>Simple Sidebar - Start Bootstrap Template</title>
 
     <!-- Bootstrap core CSS -->
+
     <link href="css/backend/bootstrap.min.css" rel="stylesheet">
+{{--<link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">--}}
+{{--<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.3/css/bootstrapValidator.min.css">--}}
 
     <!-- Custom styles for this template -->
     <link href="css/backend/simple-sidebar.css" rel="stylesheet">
-
     <!-- Bootstrap core JavaScript -->
     <script src="js/backend/jquery/jquery.min.js"></script>
     <script src="js/backend/bootstrap/js/bootstrap.bundle.min.js"></script>
-
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js"></script>--}}
     <!-- 用於表格選取-->
 
     <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css" rel="stylesheet">
@@ -34,19 +36,20 @@
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+    {{--<script src="https://static.runoob.com/assets/jquery-validation-1.14.0/dist/localization/messages_zh.js"></script>--}}
+
 </head>
 
 <body>
-
 <div class="d-flex" id="wrapper">
-
 @include('backend.Sidebar')
 <!-- Page Content -->
     <div id="page-content-wrapper" style="">
         <!-- Nav -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
             @yield('nav')
-
         </nav>
         <!-- container -->
         <div class="container-fluid">
@@ -54,7 +57,8 @@
         </div>
     </div>
     <!-- /#page-content-wrapper -->
-
 </div>
 @yield('JS')
+
 </body>
+</html>
