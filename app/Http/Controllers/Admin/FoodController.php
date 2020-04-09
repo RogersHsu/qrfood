@@ -19,7 +19,7 @@ class FoodController extends Controller
     public function showAll(){
         $array = [];
 
-        $result = food::with(['restaurant', 'category'])->get();
+        $result = food::withTrashed()->with(['restaurant', 'category'])->get();
         foreach ($result as $food) {
             $arr = [];
             $arr['fdId'] = $food['fdId'];
@@ -43,7 +43,7 @@ class FoodController extends Controller
             $arr['calcium'] = $food['calcium'];
             $arr['potassium'] = $food['potassium'];
             $arr['ferrum'] = $food['ferrum'];
-
+            $arr['deleted_at'] = $food['deleted_at'];
             array_push($array,$arr);
         }
         
@@ -110,7 +110,8 @@ class FoodController extends Controller
      * @param Request $request 前端傳來該筆資料的數據
      * @return array
      */
-    public function delete(Request $request){
+    public function delete(food $food)
+    {
         $postJsonData = $request->getContent();
         $postJsonData = json_decode($postJsonData);
         $arr = [];

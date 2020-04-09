@@ -9,11 +9,8 @@
         var viewForm = document.getElementById('form_view');
         var viewSubmit = document.getElementById('btn_view_submit');
 
-        var editForm = document.getElementById('form_edit');
-        var editSubmit = document.getElementById('btn_edit_submit');
 
         formValid(viewForm, viewSubmit);
-        formValid(editForm, editSubmit);
 
     }, false);
 })();
