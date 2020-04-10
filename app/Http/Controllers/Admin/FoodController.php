@@ -43,7 +43,15 @@ class FoodController extends Controller
             $arr['calcium'] = $food['calcium'];
             $arr['potassium'] = $food['potassium'];
             $arr['ferrum'] = $food['ferrum'];
-            $arr['deleted_at'] = $food['deleted_at'];
+
+            //如果該資料被軟刪除的話 deleted_at  = 0
+            //else deleted_at = 1
+            if ($food['deleted_at'] == null) {
+                $arr['deleted_at'] = 0;
+            } else {
+                $arr['deleted_at'] = 1;
+            }
+//            $arr['deleted_at'] = $food['deleted_at'];
             array_push($array,$arr);
         }
         
@@ -113,17 +121,34 @@ class FoodController extends Controller
     public function delete(Request $request, $fdId)
     {
 
+
         $request = json_decode($request->getContent(), true);
-        if (empty($request)) {
+        if ($request['deleted_at'] == 0) {
             food::destroy($fdId);
+
+            return response()->json([
+                'status' => '200',
+                'message' => 'Change food status to hidden!',
+                'data' => [
+                    'deleted_at' => 1,
+                ]
+            ], 200);
+
         } else {
             food::withTrashed()->where('fdId', $fdId)->restore();
+
+            return response()->json([
+                'status' => '200',
+                'message' => 'Change food status to show!',
+                'data' => [
+                    'deleted_at' => 0,
+                ]
+            ], 200);
         }
-
+        //未知錯誤
         return response()->json([
-            'status' => '200',
-            'message' => 'Change status success!'
-        ], 200);
-
+            'status' => '400',
+            'message' => 'Unknown error!',
+        ], 400);
     }
 }

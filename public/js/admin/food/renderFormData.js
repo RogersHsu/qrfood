@@ -25,7 +25,7 @@ $(document).ready(function () {
                     },
                     {
                         render: function (data, type, row, meta) {
-                            if (row.deleted_at == null)
+                            if (row.deleted_at == 0)
                                 return '<button type = "button " class = "btn btn-success column_status">顯示中</button>'
                             else
                                 return '<button type = "button" class = "btn btn-danger column_status" >隱藏中</button>'
@@ -120,32 +120,51 @@ $(document).ready(function () {
     });
 });
 
+/**
+ * 用於更改表單上食物的"狀態"
+ * @param table 表格
+ */
 function controlFoodStatus(table) {
     $('#table tbody').on('dblclick', '.column_status', function () {
-        var rowData = table.row($(this).parent().parent()).data();
+
+        var row = table.row($(this).parent().parent());
+        var rowData = row.data();
         var fdId = rowData['fdId'];
-        var foodStatus = rowData['deleted_at'];
-        console.log(("fdId:" + fdId + " foodstatus : "));
-        console.log(JSON.stringify(foodStatus));
+        //建立ajax資料
+        var dataJSON = {};
+        dataJSON['deleted_at'] = rowData['deleted_at'];
+
         $.ajax({
+
             url: APP_URL + '/food/' + fdId,
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             type: 'DELETE',
-            data: JSON.stringify(foodStatus),
+            data: JSON.stringify(dataJSON),
             contentType: "application/json;charset=utf-8",
             success: function (response) {
-                console.log(response);
+
+                rowData['deleted_at'] = response.data.foodStatus;
+                row.data(rowData).draw(); //重新繪製rowData的資料
+                change_ModalStatus_style();
+
             }
         });
-        $('#Modal_status').modal('show');
-        if ($(this).hasClass('btn-danger')) {
-            $(this).removeClass('btn-danger');
-            $(this).addClass('btn-success');
-            $(this).text("顯示中");
-        } else {
-            $(this).removeClass('btn-success');
-            $(this).addClass('btn-danger');
-            $(this).text("隱藏中");
-        }
+
     });
+}
+
+/**
+ * ajax成功後,更改ModalStatus按鈕的狀態
+ */
+function change_ModalStatus_style() {
+    $('#Modal_status').modal('show');
+    if ($(this).hasClass('btn-danger')) {
+        $(this).removeClass('btn-danger');
+        $(this).addClass('btn-success');
+        $(this).text("顯示中");
+    } else {
+        $(this).removeClass('btn-success');
+        $(this).addClass('btn-danger');
+        $(this).text("隱藏中");
+    }
 }
