@@ -106,21 +106,24 @@ class FoodController extends Controller
     }
 
     /**
-     * 刪除該筆資料
-     * @param Request $request 前端傳來該筆資料的數據
-     * @return array
+     * @param Request $request
+     * @param $fdId
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(food $food)
+    public function delete(Request $request, $fdId)
     {
-        $postJsonData = $request->getContent();
-        $postJsonData = json_decode($postJsonData);
-        $arr = [];
-        foreach($postJsonData as $data){
-            array_push($arr,$data->fdId);
+
+        $request = json_decode($request->getContent(), true);
+        if (empty($request)) {
+            food::destroy($fdId);
+        } else {
+            food::withTrashed()->where('fdId', $fdId)->restore();
         }
 
-        food::destroy($arr);
+        return response()->json([
+            'status' => '200',
+            'message' => 'Change status success!'
+        ], 200);
 
-        return $arr;
     }
 }

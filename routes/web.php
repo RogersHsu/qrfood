@@ -24,7 +24,7 @@ Route::get('/qqq',function(){
 Route::post('/exercise/create','exerciseController@create');
 Route::get('/food','Admin\FoodController@showAll');
 Route::put('/food','Admin\FoodController@update');
-Route::delete('/food/{food}', 'Admin\FoodController@delete');
+Route::delete('/food/{fdId}', 'Admin\FoodController@delete');
 
 Route::get('/api/admin/location','API\Admin\admin_food@getRestaurantlocation');
 Route::get('/api/admin/restaurant','API\Admin\admin_food@restaurant');

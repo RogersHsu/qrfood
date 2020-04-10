@@ -26,27 +26,17 @@ $(document).ready(function () {
                     {
                         render: function (data, type, row, meta) {
                             if (row.deleted_at == null)
-                                return '<button type = "button " class = "btn btn-danger column_status">隱藏中</button>'
+                                return '<button type = "button " class = "btn btn-success column_status">顯示中</button>'
                             else
-                                return '<button type = "button" class = "btn btn-success column_status" >顯示中</button>'
+                                return '<button type = "button" class = "btn btn-danger column_status" >隱藏中</button>'
 
                         }
                     },
 
                 ],
             });
-            $('#table tbody').on('dblclick', '.column_status', function () {
-                $('#Modal_status').modal('show');
-                if ($(this).hasClass('btn-danger')) {
-                    $(this).removeClass('btn-danger');
-                    $(this).addClass('btn-success');
-                    $(this).text("顯示中");
-                } else {
-                    $(this).removeClass('btn-success');
-                    $(this).addClass('btn-danger');
-                    $(this).text("隱藏中");
-                }
-            });
+
+            controlFoodStatus(table);
 
             var view_row; //被查看的那行
             var view_row_data;
@@ -129,3 +119,33 @@ $(document).ready(function () {
         },
     });
 });
+
+function controlFoodStatus(table) {
+    $('#table tbody').on('dblclick', '.column_status', function () {
+        var rowData = table.row($(this).parent().parent()).data();
+        var fdId = rowData['fdId'];
+        var foodStatus = rowData['deleted_at'];
+        console.log(("fdId:" + fdId + " foodstatus : "));
+        console.log(JSON.stringify(foodStatus));
+        $.ajax({
+            url: APP_URL + '/food/' + fdId,
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            type: 'DELETE',
+            data: JSON.stringify(foodStatus),
+            contentType: "application/json;charset=utf-8",
+            success: function (response) {
+                console.log(response);
+            }
+        });
+        $('#Modal_status').modal('show');
+        if ($(this).hasClass('btn-danger')) {
+            $(this).removeClass('btn-danger');
+            $(this).addClass('btn-success');
+            $(this).text("顯示中");
+        } else {
+            $(this).removeClass('btn-success');
+            $(this).addClass('btn-danger');
+            $(this).text("隱藏中");
+        }
+    });
+}
