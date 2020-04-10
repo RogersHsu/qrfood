@@ -43,6 +43,7 @@ $(document).ready(function () {
             $('#table tbody').on('click', '.column_view', function () {
                 view_row = table.row($(this).parent().parent());
                 view_row_data = view_row.data();
+                renderRsNameDropdown(view_row_data['rsName'], view_row_data['rsId']);
                 $('#modal_view_rsName').val(view_row_data['rsName']);
                 $('#modal_view_fdName').val(view_row_data['fdName']);
                 $('#modal_view_cName').val(view_row_data['cName']);
@@ -121,6 +122,37 @@ $(document).ready(function () {
 });
 
 /**
+ * 渲染 #modalView_dropdown_rsName 下拉列表
+ * @param rsName 餐廳名稱
+ */
+function renderRsNameDropdown(default_rsName, default_rsId) {
+    //clear all option
+    $('#modalView_dropdown_rsName').html("");
+
+    //此食物的rsName
+    var str = "<option value ='" + default_rsId + "'>" + default_rsName + "</option>";
+    $('#modalView_dropdown_rsName').append(str);
+
+    $.ajax({
+        // {{--<option value="1">One</option>--}}
+        url: APP_URL + '/restaurant',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        type: 'GET',
+        contentType: "application/json;charset=utf-8",
+        success: function (response) {
+            var text = "";
+            for (i = 0; i < response.length; i++) {
+                var rsName = response[i].rsName;
+                var rsId = response[i].rsId;
+                if (rsName === default_rsName) continue;
+                text += "<option value ='" + rsId + "'>" + rsName + "</option>";
+            }
+            $('#modalView_dropdown_rsName').append(text);
+        }
+    });
+}
+
+/**
  * 用於更改表單上食物的"狀態"
  * @param table 表格
  */
@@ -142,11 +174,9 @@ function controlFoodStatus(table) {
             data: JSON.stringify(dataJSON),
             contentType: "application/json;charset=utf-8",
             success: function (response) {
-
-                rowData['deleted_at'] = response.data.foodStatus;
+                rowData['deleted_at'] = response.data.deleted_at;
                 row.data(rowData).draw(); //重新繪製rowData的資料
                 change_ModalStatus_style();
-
             }
         });
 
@@ -168,3 +198,8 @@ function change_ModalStatus_style() {
         $(this).text("隱藏中");
     }
 }
+
+$(document).ready(function () {
+
+
+});

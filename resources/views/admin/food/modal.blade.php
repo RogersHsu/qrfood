@@ -12,19 +12,29 @@
             <div class="modal-body" id="del_tabledata_comfirm">
                 <form id="form_view" class="was-validated">
                     <div class="form-row">
+                        {{--<div class="form-group col-md-3">--}}
+                        {{--<label for="email">餐廳名稱</label>--}}
+                        {{--<input type="text" class="form-control" placeholder="Enter fdId" id="modal_view_rsName"--}}
+                        {{--name="username"--}}
+                        {{--required--}}
+                        {{-->--}}
+                        {{--<div class="invalid-feedback">此欄位必須被填寫！--}}
+                        {{--</div>--}}
+                        {{--</div>--}}
                         <div class="form-group col-md-3">
-                            <label for="email">餐廳名稱</label>
-                            <input type="text" class="form-control" placeholder="Enter fdId" id="modal_view_rsName"
-                                   name="username"
-                                   required
-                            >
-                            <div class="invalid-feedback">此欄位必須被填寫！
-                            </div>
+                            <label>餐廳名稱</label>
+                            <select id="modalView_dropdown_rsName" class="custom-select" required>
+                                {{--<option value="1">One</option>--}}
+                                {{--<option value="2">Two</option>--}}
+                                {{--<option value="3">Three</option>--}}
+                            </select>
+                            <div class="invalid-feedback">此欄位必須填寫</div>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="pwd">食物名稱</label>
-                            <input type="text" class="form-control" placeholder="Enter rsId" id="modal_view_fdName">
-                            <div class="invalid-feedback">这是一个invalid-feedback</div>
+                            <input type="text" class="form-control" placeholder="Enter rsId" id="modal_view_fdName"
+                                   required>
+                            <div class="invalid-feedback">此欄位必須填寫</div>
 
                         </div>
                         <div class="form-group col-md-3">

@@ -16,7 +16,8 @@ class FoodController extends Controller
      * 取得所有所有食物的資料
      * @return array
      */
-    public function showAll(){
+    public function showAll()
+    {
         $array = [];
 
         $result = food::withTrashed()->with(['restaurant', 'category'])->get();
@@ -120,7 +121,6 @@ class FoodController extends Controller
      */
     public function delete(Request $request, $fdId)
     {
-
 
         $request = json_decode($request->getContent(), true);
         if ($request['deleted_at'] == 0) {
