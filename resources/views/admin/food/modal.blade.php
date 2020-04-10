@@ -12,21 +12,10 @@
             <div class="modal-body" id="del_tabledata_comfirm">
                 <form id="form_view" class="was-validated">
                     <div class="form-row">
-                        {{--<div class="form-group col-md-3">--}}
-                        {{--<label for="email">餐廳名稱</label>--}}
-                        {{--<input type="text" class="form-control" placeholder="Enter fdId" id="modal_view_rsName"--}}
-                        {{--name="username"--}}
-                        {{--required--}}
-                        {{-->--}}
-                        {{--<div class="invalid-feedback">此欄位必須被填寫！--}}
-                        {{--</div>--}}
-                        {{--</div>--}}
                         <div class="form-group col-md-3">
                             <label>餐廳名稱</label>
-                            <select id="modalView_dropdown_rsName" class="custom-select" required>
-                                {{--<option value="1">One</option>--}}
-                                {{--<option value="2">Two</option>--}}
-                                {{--<option value="3">Three</option>--}}
+                            <select id="modal_view_dropdown_rsName" class="custom-select" required>
+                                {{--render data in renderFormData.js--}}
                             </select>
                             <div class="invalid-feedback">此欄位必須填寫</div>
                         </div>
@@ -38,8 +27,11 @@
 
                         </div>
                         <div class="form-group col-md-3">
-                            <label for="pwd">分類</label>
-                            <input type="text" class="form-control" placeholder="Enter fdName" id="modal_view_cName">
+                            <label>分類</label>
+                            <select id="modal_view_dropdown_category" class="custom-select" required>
+                                {{--render data in renderFormData.js--}}
+                            </select>
+                            <div class="invalid-feedback">此欄位必須填寫</div>
                         </div>
                     </div>
                     <hr/>

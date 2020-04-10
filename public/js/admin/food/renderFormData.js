@@ -44,6 +44,7 @@ $(document).ready(function () {
                 view_row = table.row($(this).parent().parent());
                 view_row_data = view_row.data();
                 renderRsNameDropdown(view_row_data['rsName'], view_row_data['rsId']);
+                renderCategoryDropdown(view_row_data['cName'], view_row_data['cId']);
                 $('#modal_view_rsName').val(view_row_data['rsName']);
                 $('#modal_view_fdName').val(view_row_data['fdName']);
                 $('#modal_view_cName').val(view_row_data['cName']);
@@ -61,7 +62,6 @@ $(document).ready(function () {
                 $('#modal_view_calcium').val(view_row_data['calcium']);
                 $('#modal_view_potassium').val(view_row_data['potassium']);
                 $('#modal_view_ferrum').val(view_row_data['ferrum']);
-                // console.log(view_row_data);
             });
 
             var edit_row; //被編輯的那行
@@ -122,16 +122,47 @@ $(document).ready(function () {
 });
 
 /**
- * 渲染 #modalView_dropdown_rsName 下拉列表
- * @param rsName 餐廳名稱
+ * 渲染[食物資料(查看/修改)] 下拉選單(分類) 的選項
+ * @param default_cName 該食物原本的分類名稱
+ * @param default_cId 該食物原本的分類ID
+ */
+function renderCategoryDropdown(default_cName, default_cId) {
+    //clear all dropdown option
+    $('#modal_view_dropdown_category').html("");
+
+    var str = "<option value ='" + default_cId + "'>" + default_cName + "</option>";
+    $('#modal_view_dropdown_category').append(str);
+
+    $.ajax({
+        url: APP_URL + '/category',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        type: 'GET',
+        contentType: "application/json;charset=utf-8",
+        success: function (response) {
+            var text = "";
+            for (i = 0; i < response.length; i++) {
+                var cName = response[i].cName;
+                var cId = response[i].cId;
+                if (cName === default_cName) continue;
+                text += "<option value ='" + cId + "'>" + cName + "</option>";
+            }
+            $('#modal_view_dropdown_category').append(text);
+        }
+    });
+}
+
+/**
+ * 渲染[食物資料(查看/修改)] 下拉選單(餐廳名稱) 的選項
+ * @param default_rsName 該食物原本的的餐廳名稱
+ * @param default_rsId 該食物原本的餐廳ID
  */
 function renderRsNameDropdown(default_rsName, default_rsId) {
     //clear all option
-    $('#modalView_dropdown_rsName').html("");
+    $('#modal_view_dropdown_rsName').html("");
 
     //此食物的rsName
     var str = "<option value ='" + default_rsId + "'>" + default_rsName + "</option>";
-    $('#modalView_dropdown_rsName').append(str);
+    $('#modal_view_dropdown_rsName').append(str);
 
     $.ajax({
         // {{--<option value="1">One</option>--}}
@@ -147,7 +178,7 @@ function renderRsNameDropdown(default_rsName, default_rsId) {
                 if (rsName === default_rsName) continue;
                 text += "<option value ='" + rsId + "'>" + rsName + "</option>";
             }
-            $('#modalView_dropdown_rsName').append(text);
+            $('#modal_view_dropdown_rsName').append(text);
         }
     });
 }

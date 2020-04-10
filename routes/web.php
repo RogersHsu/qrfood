@@ -28,6 +28,8 @@ Route::delete('/food/{fdId}', 'Admin\FoodController@delete');
 
 Route::get('/restaurant', 'Admin\RestaurantController@show');
 
+Route::get('/category', 'Admin\CategoryController@show');
+
 Route::get('/api/admin/location','API\Admin\admin_food@getRestaurantlocation');
 Route::get('/api/admin/restaurant','API\Admin\admin_food@restaurant');
 Route::get('/api/admin/category', 'API\Admin\admin_food@getAllCategory');
