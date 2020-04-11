@@ -46,16 +46,16 @@ class FoodController extends Controller
             $arr['ferrum'] = $food['ferrum'];
 
             //如果該資料被軟刪除的話 deleted_at  = 0
-            //else deleted_at = 1
-            if ($food['deleted_at'] == null) {
-                $arr['deleted_at'] = 0;
-            } else {
-                $arr['deleted_at'] = 1;
-            }
-//            $arr['deleted_at'] = $food['deleted_at'];
-            array_push($array,$arr);
+//            //else deleted_at = 1
+//            if ($food['deleted_at'] == null) {
+//                $arr['deleted_at'] = 0;
+//            } else {
+//                $arr['deleted_at'] = 1;
+//            }
+            $arr['deleted_at'] = $food['deleted_at'];
+            array_push($array, $arr);
         }
-        
+
         return $array;
     }
 
@@ -64,10 +64,11 @@ class FoodController extends Controller
      * @param Request $request 前端傳來該筆資料的更新數據
      * @return string
      */
-    public function update(Request $request){
+    public function update(Request $request)
+    {
         $postJsonData = $request->getContent();
         //做資料驗證
-        $ValidData = json_decode($postJsonData,true);
+        $ValidData = json_decode($postJsonData, true);
         //return $ValidData;
         $rules = [
             'rsName' => 'required|alpha',
@@ -82,7 +83,7 @@ class FoodController extends Controller
             'numeric' => ':attribute 必須為數字',
             'between' => ':attribute 必須介於0~9999.9999之間'
         );
-        $validator = Validator::make($ValidData,$rules,$messages);
+        $validator = Validator::make($ValidData, $rules, $messages);
 
         //要回傳前端的json
         $data = array(
@@ -97,7 +98,7 @@ class FoodController extends Controller
 
             //資料庫更新該筆資料
             $updateData = json_decode($postJsonData);
-            $Food = food::where('fdId',$updateData->fdId)->first();
+            $Food = food::where('fdId', $updateData->fdId)->first();
 
             $Food->rsId = $updateData->rsId;
             $Food->fdName = $updateData->fdName;
@@ -115,40 +116,60 @@ class FoodController extends Controller
     }
 
     /**
+     * 把該筆資料軟刪除
      * @param Request $request
      * @param $fdId
      * @return \Illuminate\Http\JsonResponse
      */
     public function delete(Request $request, $fdId)
     {
-
         $request = json_decode($request->getContent(), true);
-        if ($request['deleted_at'] == 0) {
+        if ($request['deleted_at'] == null) {
             food::destroy($fdId);
+            $deleted_at = food::withTrashed()->select('deleted_at')->where('fdId', $fdId)->get();
 
             return response()->json([
                 'status' => '200',
                 'message' => 'Change food status to hidden!',
                 'data' => [
-                    'deleted_at' => 1,
+                    'deleted_at' => $deleted_at,
                 ]
             ], 200);
-
         } else {
-            food::withTrashed()->where('fdId', $fdId)->restore();
+            //未知錯誤
+            return response()->json([
+                'status' => '400',
+                'message' => 'Unknown error!',
+            ], 400);
 
+        }
+
+    }
+
+    /**
+     * 解除軟刪除的狀態
+     * @param Request $request
+     * @param $fdId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function restore(Request $request, $fdId)
+    {
+        $request = json_decode($request->getContent(), true);
+        if ($request['deleted_at'] != null) {
+            food::withTrashed()->where('fdId', $fdId)->restore();
             return response()->json([
                 'status' => '200',
                 'message' => 'Change food status to show!',
                 'data' => [
-                    'deleted_at' => 0,
+                    'deleted_at' => null,
                 ]
             ], 200);
+        } else {
+            //未知錯誤
+            return response()->json([
+                'status' => '400',
+                'message' => 'Unknown error!',
+            ], 400);
         }
-        //未知錯誤
-        return response()->json([
-            'status' => '400',
-            'message' => 'Unknown error!',
-        ], 400);
     }
 }

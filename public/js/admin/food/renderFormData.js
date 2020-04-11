@@ -25,7 +25,7 @@ $(document).ready(function () {
                     },
                     {
                         render: function (data, type, row, meta) {
-                            if (row.deleted_at == 0)
+                            if (row.deleted_at == null)
                                 return '<button type = "button " class = "btn btn-success column_status">顯示中</button>'
                             else
                                 return '<button type = "button" class = "btn btn-danger column_status" >隱藏中</button>'
@@ -193,24 +193,37 @@ function controlFoodStatus(table) {
         var row = table.row($(this).parent().parent());
         var rowData = row.data();
         var fdId = rowData['fdId'];
-        //建立ajax資料
+        //建立傳送後端資料
         var dataJSON = {};
         dataJSON['deleted_at'] = rowData['deleted_at'];
-
-        $.ajax({
-
-            url: APP_URL + '/food/' + fdId,
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            type: 'DELETE',
-            data: JSON.stringify(dataJSON),
-            contentType: "application/json;charset=utf-8",
-            success: function (response) {
-                rowData['deleted_at'] = response.data.deleted_at;
-                row.data(rowData).draw(); //重新繪製rowData的資料
-                change_ModalStatus_style();
-            }
-        });
-
+        //判斷該筆資料目前是隱藏還是顯示中的狀態,以進行更換狀態
+        if (rowData['deleted_at'] == null) {
+            $.ajax({
+                url: APP_URL + '/food/' + fdId,
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                type: 'DELETE',
+                data: JSON.stringify(dataJSON),
+                contentType: "application/json;charset=utf-8",
+                success: function (response) {
+                    rowData['deleted_at'] = response.data.deleted_at;
+                    row.data(rowData).draw(); //重新繪製rowData的資料
+                    change_ModalStatus_style();
+                }
+            });
+        } else {
+            $.ajax({
+                url: APP_URL + '/food/' + fdId + '/restore',
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                type: 'PUT',
+                data: JSON.stringify(dataJSON),
+                contentType: "application/json;charset=utf-8",
+                success: function (response) {
+                    rowData['deleted_at'] = response.data.deleted_at;
+                    row.data(rowData).draw(); //重新繪製rowData的資料
+                    change_ModalStatus_style();
+                }
+            });
+        }
     });
 }
 
@@ -218,7 +231,7 @@ function controlFoodStatus(table) {
  * ajax成功後,更改ModalStatus按鈕的狀態
  */
 function change_ModalStatus_style() {
-    $('#Modal_status').modal('show');
+    $('#Modal_status').modal('show'); //顯示狀態更改成功
     if ($(this).hasClass('btn-danger')) {
         $(this).removeClass('btn-danger');
         $(this).addClass('btn-success');
@@ -229,8 +242,3 @@ function change_ModalStatus_style() {
         $(this).text("隱藏中");
     }
 }
-
-$(document).ready(function () {
-
-
-});

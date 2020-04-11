@@ -23,7 +23,9 @@ Route::get('/qqq',function(){
 
 Route::post('/exercise/create','exerciseController@create');
 Route::get('/food','Admin\FoodController@showAll');
-Route::put('/food','Admin\FoodController@update');
+Route::put('/food/{fdId}', 'Admin\FoodController@update');
+Route::patch('food/{fdId}', 'Admin\FoodController@updatee');
+Route::put('food/{fdId}/restore', 'Admin\FoodController@restore');
 Route::delete('/food/{fdId}', 'Admin\FoodController@delete');
 
 Route::get('/restaurant', 'Admin\RestaurantController@show');
