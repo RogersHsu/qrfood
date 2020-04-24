@@ -44,7 +44,7 @@ class FoodController extends Controller
             $arr['calcium'] = $food['calcium'];
             $arr['potassium'] = $food['potassium'];
             $arr['ferrum'] = $food['ferrum'];
-
+            $arr['photo'] = $food['photo'];
             //如果該資料被軟刪除的話 deleted_at  = 0
 //            //else deleted_at = 1
 //            if ($food['deleted_at'] == null) {
@@ -64,18 +64,30 @@ class FoodController extends Controller
      * @param Request $request 前端傳來該筆資料的更新數據
      * @return string
      */
-    public function update(Request $request)
+    public function update(Request $request, $fdId)
     {
         $postJsonData = $request->getContent();
+//        return $fdId;
         //做資料驗證
         $ValidData = json_decode($postJsonData, true);
-        //return $ValidData;
         $rules = [
-            'rsName' => 'required|alpha',
-            'fdName' => 'required|alpha',
-            'cName' => 'required|alpha',
+            'rsId' => 'required|numeric',
+            'fdName' => 'required',
+            'cId' => 'required|numeric',
             'gram' => 'required|numeric|between:0,9999.9999',
             'calorie' => 'required|numeric|between:0,9999.9999',
+            'protein' => 'required|numeric|between:0,9999.9999',
+            'fat' => 'required|numeric|between:0,9999.9999',
+            'saturatedFat' => 'required|numeric|between:0,9999.9999',
+            'transFat' => 'required|numeric|between:0,9999.9999',
+            'cholesterol' => 'required|numeric|between:0,9999.9999',
+            'carbohydrate' => 'required|numeric|between:0,9999.9999',
+            'sugar' => 'required|numeric|between:0,9999.9999',
+            'dietaryFiber' => 'required|numeric|between:0,9999.9999',
+            'sodium' => 'required|numeric|between:0,9999.9999',
+            'calcium' => 'required|numeric|between:0,9999.9999',
+            'potassium' => 'required|numeric|between:0,9999.9999',
+            'ferrum' => 'required|numeric|between:0,9999.9999',
         ];
         $messages = array(
             'required' => '欄位不能為空',
@@ -85,38 +97,54 @@ class FoodController extends Controller
         );
         $validator = Validator::make($ValidData, $rules, $messages);
 
-        //要回傳前端的json
+//        //要回傳前端的json
         $data = array(
             'status' => 0,
             'message' => '',
             'data' => ''
         );
-
+//
         if ($validator->passes()) {
             $data['status'] = 1;
             $data['message'] = 'success';
 
+
             //資料庫更新該筆資料
             $updateData = json_decode($postJsonData);
-            $Food = food::where('fdId', $updateData->fdId)->first();
+
+            $Food = food::withTrashed()->where('fdId', $fdId)->first();
 
             $Food->rsId = $updateData->rsId;
             $Food->fdName = $updateData->fdName;
             $Food->cId = $updateData->cId;
             $Food->gram = $updateData->gram;
             $Food->calorie = $updateData->calorie;
-            $test = $Food->save();
-            $data['data'] = $test;
+            $Food->protein = $updateData->protein;
+            $Food->fat = $updateData->fat;
+            $Food->saturatedFat = $updateData->saturatedFat;
+            $Food->transFat = $updateData->transFat;
+            $Food->cholesterol = $updateData->cholesterol;
+            $Food->carbohydrate = $updateData->carbohydrate;
+            $Food->sugar = $updateData->sugar;
+            $Food->dietaryFiber = $updateData->dietaryFiber;
+            $Food->sodium = $updateData->sodium;
+            $Food->calcium = $updateData->calcium;
+            $Food->potassium = $updateData->potassium;
+            $Food->ferrum = $updateData->ferrum;
+
+
+            $response = $Food->save();
+            $data['data'] = $response;
             return json_encode($data);
         } else {
             $data['status'] = 0;
             $data['message'] = $validator->errors()->all();
-            return json_encode($data);
+            return $data;
         }
     }
 
     /**
-     * 把該筆資料軟刪除
+     * 把該筆資料軟刪除d
      * @param Request $request
      * @param $fdId
      * @return \Illuminate\Http\JsonResponse

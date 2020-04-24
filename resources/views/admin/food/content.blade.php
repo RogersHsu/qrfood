@@ -7,6 +7,7 @@
             <th>食物名稱</th>
             <th>食物資料</th>
             <th>狀態 (雙擊按鈕更改狀態)</th>
+            <th>圖片</th>
         </tr>
         </thead>
         <tbody>
