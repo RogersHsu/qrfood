@@ -12,9 +12,11 @@
 */
 
 Route::get('/', function () {
-    return view('admin/food/main');
-
+    $restaurantName = \App\restaurant::select('location')->groupBy('location')->get();
+    return view('admin/food/main', ['restaurantName' => $restaurantName]);
 });
+
+
 
 //exercise
 Route::get('/qqq',function(){

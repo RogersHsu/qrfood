@@ -20,6 +20,9 @@
     {{--denfine APP_URL--}}
     <script type="text/javascript">
         var APP_URL ={!! json_encode(url('/')) !!};
+
+        var action = "{{ env("APP_URL") }}"
+
     </script>
 
 @endsection
