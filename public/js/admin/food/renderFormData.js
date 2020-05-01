@@ -4,17 +4,42 @@
  */
 
 $(document).ready(function () {
+    renderDataTable();
 
+    //查看指定餐廳
+    $('#btn_search').on('click',function(){
+        var rsName = $('#navbar_selectRestaurant a').text();
+        if($('#navbar_selectRestaurant a').hasClass("able") == true)
+            drawDataTable(rsName);
+    });
+});
+function drawDataTable(rsName){
+    var url = APP_URL + "/food/" + rsName;
     $.ajax({
         'type': "GET",
         'dataType': 'JSON',
-        'url': APP_URL + "/food",
+        'url':  url,
         'success': function (response) {
-            var fooddata = response;
+            console.log(response);
+            var datatable = $('#table').DataTable();
+            datatable.clear().draw();
+            datatable.rows.add(response); // Add new data
+            datatable.draw(); // Redraw the DataTable
+
+        }
+    });
+}
+function renderDataTable(){
+    var url = APP_URL + "/food";
+    $.ajax({
+        'type': "GET",
+        'dataType': 'JSON',
+        'url':  url,
+        'success': function (response) {
             //繪製DataTable
             var table = $('#table').DataTable({
                 "bInfo": false, //取消左下顯示Entries
-                data: fooddata,
+                data: response,
                 columns: [
                     {
                         "data": "rsName"
@@ -23,7 +48,17 @@ $(document).ready(function () {
                     },
                     {
                         render: function (data, type, row, meta) {
-                            return "<button class='btn btn-success column_view' data-toggle='modal' data-target='#Modal_view'>查看/修改</button>"
+                            return '<img style="height:50px;" src=' + row.photo + '>';
+                        }
+                    },
+                    {
+                        render: function (data, type, row, meta) {
+                            return "<button class='btn btn-info column_view' data-toggle='modal' data-target='#Modal_view'>查看/修改</button>"
+                        }
+                    },
+                    {
+                        render: function (data, type, row, meta) {
+                            return "<button class='btn btn-info column_image' data-toggle='modal' data-target='#Modal_image'>更換</button>"
                         }
                     },
                     {
@@ -35,18 +70,13 @@ $(document).ready(function () {
 
                         }
                     },
-                    {
-                        render: function (data, type, row, meta) {
-                            return '<img style="height:100px;" src=' + row.photo + '>';
-                        }
-                    }
+
 
                 ],
             });
 
 
             controlFoodStatus(table);
-            data_change(); //測試中
 
             var view_row; //被查看的那行
             var view_row_data;
@@ -80,74 +110,117 @@ $(document).ready(function () {
 
                 event.preventDefault();
             });
-
-            var edit_row; //被編輯的那行
-            var edit_row_data; //被編輯那行的資料
-
-
-            //點選修改按鈕
-            $('#table tbody').on('click', '#edit', function () {
-                //設定表單值
-                edit_row = table.row($(this).parent().parent());
-                edit_row_data = edit_row.data();
-
-                $('#modal_edit_rsName').attr('value', edit_row_data['rsName']);
-                $('#modal_edit_fdName').val(edit_row_data['fdName']);
-                $('#modal_edit_cName').attr('value', edit_row_data['cName']);
-
-            });
-            //提交修改內容
-            $('#btn_edit_submit').on('click', function () {
-                var JsonData = {}; //要回傳後端的資料
-                JsonData['fdId'] = edit_row_data['fdId'];
-                JsonData['rsId'] = edit_row_data['rsId'];
-                JsonData['cId'] = edit_row_data['cId'];
-                JsonData['rsName'] = $('#modal_edit_rsName').val();
-                JsonData['fdName'] = $('#modal_edit_fdName').val();
-                JsonData['cName'] = $('#modal_edit_cName').val();
-                JsonData['gram'] = $('#modal_edit_gram').val();
-                JsonData['calorie'] = $('#modal_edit_calorie').val();
-
-                $.ajax({
-                    url: APP_URL + '/food',
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                    type: 'PUT',
-                    data: JSON.stringify(JsonData),
-                    contentType: "application/json;charset=utf-8",
-                    success: function (response) {
-                        var response = JSON.parse(response);
-                        if (response.status == 1) {
-                            edit_row_data['rsName'] = $('#modal_edit_rsName').val();
-                            edit_row_data['fdName'] = $('#modal_edit_fdName').val();
-                            edit_row_data['cName'] = $('#modal_edit_cName').val();
-                            edit_row_data['gram'] = $('#modal_edit_gram').val();
-                            edit_row_data['calorie'] = $('#modal_edit_calorie').val();
-                            edit_row.data(edit_row_data).draw(); //重新繪製
-                            $('#Modal_edit').modal('hide');
-                            console.log(response);
-                        } else {
-                            alert(response.message);
-                        }
-
-                    }
-                });
-
-
-            });
-
-
+            openEditImageView();
         },
     });
-});
+}
 
+function openEditImageView(){
+    var defaultImageUrl; //原本的圖片
+    $('#table tbody').on('click','.column_image',function(event){
+        $(document).off('click', '#but_upload'); //移除"修改"的監聽
+
+        //清除input內的file
+        $('#file').val('');
+        //拿到該欄位的資料
+        var table = $('#table').DataTable();
+        var row = table.row($(this).parent().parent());
+        var fdId = row.data()['fdId'];
+        defaultImageUrl = row.data()['photo'];
+
+        $('#previewImage').attr('src',defaultImageUrl); //在預覽畫面放上原本的圖片
+        //預覽
+        $("#file").on('change',function() {
+
+            if(checkfile() == true){ //判斷檔名是否是圖檔
+                readURL(this); //預覽上傳的圖片
+                var fileName = $(this).val().split("\\").pop();
+                $(this).siblings(".custom-file-label").addClass("selected").html(fileName); //input的文字變成上傳的檔名
+            }else{ //
+                $('#file').val(''); //清空input
+                $(this).siblings(".custom-file-label").addClass("selected").html(''); //input的文字變成空白
+                $(this).next().html('可接受的副檔名有.jpg .png'); //錯誤提醒
+                $(' #previewImage').attr('src',defaultImageUrl); //畫面變為原本的圖片
+            }
+        });
+
+        submitFoodImage(table,row); //送出更換請求
+
+    });
+    function readURL(input){
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $('#previewImage').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]); // convert to base64 string
+        }
+    }
+    // Add the following code if you want the name of the file appear on select
+    //判斷檔名是否是圖檔
+    function checkfile() {
+        var validExts = new Array(".png", ".jpg",".jpeg");
+        var fileExt = $('#file').val();
+        fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+        if (validExts.indexOf(fileExt) < 0) {
+            return false;
+        }else{
+            return true;
+        }
+    }
+}
+
+/**
+ * 更改食物照片
+ * @param table
+ * @param row
+ */
+function submitFoodImage(table,row){
+    $(document).on('click',"#but_upload",function() {
+
+        var form = $('#form_Image');
+        if (form[0].checkValidity() === false) {
+
+        }else{
+            var fdId = row.data()['fdId'];
+            var fd = new FormData();
+            var files = $('#file')[0].files[0];
+            fd.append('file', files);
+            $.ajax({
+                url: APP_URL + '/food/' + fdId + '/photo',
+                type: 'POST',
+                headers: { 'Content-Type' : 'application/x-www-form-urlencoded'},
+                data: (fd),
+                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    // response = JSON.parse(response);
+                    row.data()['photo']=response['data']['photo']+"?"+Math.random();
+                    row.data(row.data()).draw();
+                    console.log(response);
+
+                }
+            });
+        }
+
+    });
+}
+
+/**
+ * 更改食物資料
+ * @param view_row
+ */
 function submitDataChange(view_row) {
     $(document).on("click", '#btn_view_submit', function () {
         var fdId = view_row.data()['fdId'];
         var form = document.getElementById('form_view');
 
         if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
+            // event.preventDefault();
+            // event.stopPropagation();
         } else {
             var JsonData = {}; //要回傳後端的資料
             JsonData['fdId'] = fdId;
@@ -181,9 +254,9 @@ function submitDataChange(view_row) {
                     console.log(response);
                     if (response.status == 1) {
                         view_row.data()['fdName'] = $('#modal_view_fdName').val();
-                        view_row.data()['rsName'] = $("#modal_view_dropdown_rsName option:selected").text();
+                        // view_row.data()['rsName'] = $("#modal_view_dropdown_rsName option:selected").text();
                         view_row.data()['rsId'] = $('#modal_view_dropdown_rsName').val();
-                        view_row.data()['cName'] = $("#modal_view_dropdown_category option:selected").text();
+                        // view_row.data()['cName'] = $("#modal_view_dropdown_category option:selected").text();
                         view_row.data()['cId'] = $('#modal_view_dropdown_category').val();
                         view_row.data()['gram'] = $('#modal_view_gram').val();
                         view_row.data()['calorie'] = $('#modal_view_calorie').val();
@@ -200,7 +273,8 @@ function submitDataChange(view_row) {
                         view_row.data()['potassium'] = $('#modal_view_potassium').val();
                         view_row.data()['ferrum'] = $('#modal_view_ferrum').val();
                         view_row.data(view_row.data()).draw();
-
+                        $('#Modal_view').modal('hide');
+                        $('#Modal_success').modal('show');
                     }
                 }
 
@@ -211,75 +285,6 @@ function submitDataChange(view_row) {
     })
 }
 
-function viewSubmit(aa) {
-
-    console.log(aa);
-    // var viewForm = document.getElementById('form_view');
-    // var viewSubmit = document.getElementById('btn_view_submit');
-    // formValid(viewForm,fdId);
-}
-
-function formValid(form, fdId) {
-    if (form.checkValidity() === false) {
-        event.preventDefault();
-        event.stopPropagation();
-    } else {
-        var JsonData = {}; //要回傳後端的資料
-        JsonData['fdId'] = fdId;
-        JsonData['fdName'] = $('#modal_view_fdName').val();
-        JsonData['rsId'] = $('#modal_view_dropdown_rsName').val();
-        JsonData['cId'] = $('#modal_view_dropdown_category').val();
-        JsonData['gram'] = $('#modal_view_gram').val();
-        JsonData['calorie'] = $('#modal_view_calorie').val();
-        JsonData['protein'] = $('#modal_view_protein').val();
-        JsonData['fat'] = $('#modal_view_fat').val();
-        JsonData['saturatedFat'] = $('#modal_view_saturatedFat').val();
-        JsonData['transFat'] = $('#modal_view_transFat').val();
-        JsonData['cholesterol'] = $('#modal_view_cholesterol').val();
-        JsonData['carbohydrate'] = $('#modal_view_carbohydrate').val();
-        JsonData['sugar'] = $('#modal_view_sugar').val();
-        JsonData['dietaryFiber'] = $('#modal_view_dietaryFiber').val();
-        JsonData['sodium'] = $('#modal_view_sodium').val();
-        JsonData['calcium'] = $('#modal_view_calcium').val();
-        JsonData['potassium'] = $('#modal_view_potassium').val();
-        JsonData['ferrum'] = $('#modal_view_ferrum').val();
-
-
-        $.ajax({
-            url: APP_URL + '/food/' + fdId,
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            type: 'PUT',
-            data: JSON.stringify(JsonData),
-            contentType: "application/json;charset=utf-8",
-            success: function (response) {
-                var response = JSON.parse(response);
-                console.log(response);
-                if (response.status == 1) {
-                    JsonData['fdName'] = $('#modal_view_fdName').val();
-                    JsonData['rsId'] = $('#modal_view_dropdown_rsName').val();
-                    JsonData['cId'] = $('#modal_view_dropdown_category').val();
-                    JsonData['gram'] = $('#modal_view_gram').val();
-                    JsonData['calorie'] = $('#modal_view_calorie').val();
-                    JsonData['protein'] = $('#modal_view_protein').val();
-                    JsonData['fat'] = $('#modal_view_fat').val();
-                    JsonData['saturatedFat'] = $('#modal_view_saturatedFat').val();
-                    JsonData['transFat'] = $('#modal_view_transFat').val();
-                    JsonData['cholesterol'] = $('#modal_view_cholesterol').val();
-                    JsonData['carbohydrate'] = $('#modal_view_carbohydrate').val();
-                    JsonData['sugar'] = $('#modal_view_sugar').val();
-                    JsonData['dietaryFiber'] = $('#modal_view_dietaryFiber').val();
-                    JsonData['sodium'] = $('#modal_view_sodium').val();
-                    JsonData['calcium'] = $('#modal_view_calcium').val();
-                    JsonData['potassium'] = $('#modal_view_potassium').val();
-                    JsonData['ferrum'] = $('#modal_view_ferrum').val();
-                }
-            }
-
-
-        });
-
-    }
-}
 
 /**
  * 渲染[食物資料(查看/修改)] 下拉選單(分類) 的選項
@@ -356,6 +361,7 @@ function controlFoodStatus(table) {
         //建立傳送後端資料
         var dataJSON = {};
         dataJSON['deleted_at'] = rowData['deleted_at'];
+        console.log( dataJSON['deleted_at']);
         //判斷該筆資料目前是隱藏還是顯示中的狀態,以進行更換狀態
         if (rowData['deleted_at'] == null) {
             $.ajax({
@@ -391,7 +397,7 @@ function controlFoodStatus(table) {
  * ajax成功後,更改ModalStatus按鈕的狀態
  */
 function change_ModalStatus_style() {
-    $('#Modal_status').modal('show'); //顯示狀態更改成功
+    $('#Modal_success').modal('show'); //顯示狀態更改成功
     if ($(this).hasClass('btn-danger')) {
         $(this).removeClass('btn-danger');
         $(this).addClass('btn-success');
@@ -401,18 +407,4 @@ function change_ModalStatus_style() {
         $(this).addClass('btn-danger');
         $(this).text("隱藏中");
     }
-}
-
-function data_change() {
-    var savevalue;
-    $('#form_view input').on('focusin', function () {
-        savevalue = $(this).val();
-        // $(this).data('val', $(this).val());
-    });
-
-    $("#form_view input").bind("change paste keyup", function () {
-        if ($(this).val() != savevalue) {
-            console.log("not good");
-        }
-    });
 }

@@ -47,7 +47,6 @@ return [
             'driver' => 'local',
             'root' => storage_path('app'),
         ],
-
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
@@ -62,6 +61,17 @@ return [
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
         ],
+        'uploads' => [
+            'driver' => 'local',
+            'root' => storage_path('app/uploads'),
+//            'root' => public_path('uploads/'.date('Ymd')),
+        ],
+        'custom_folder_1' => [
+                'driver' => 'local',
+                'root'   => 'C:\\xampp\\upload\\',
+        ]
+
+
 
     ],
 

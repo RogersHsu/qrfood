@@ -9,15 +9,19 @@
 @endsection
 
 {{--彈跳視窗--}}
-@include('admin/food.modal')
+{{--<script src="js/admin/jquery/jquery.min.js"></script>--}}
+
+{{--<script src="{{asset('js/admin/food/renderFormData.js')}}"></script>--}}
+@section('modal')
+    @include('admin/food.modal')
+@endsection
+
 @section('JS')
-    {{--渲染food表格資料--}}
+{{--    渲染food表格資料--}}
     <script src="{{asset('js/admin/food/renderFormData.js')}}"></script>
 
-    {{--表單驗證JS--}}
-    <script src="{{asset('js/admin/modalValid.js')}}"></script>
+    表單驗證JS
 
-    {{--denfine APP_URL--}}
     <script type="text/javascript">
         var APP_URL ={!! json_encode(url('/')) !!};
 

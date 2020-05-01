@@ -4,14 +4,159 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Input;
 use DB;
 use App\food;
 use App\restaurant;
 use App\category;
 use Validator;
-
+use Exception;
+use Illuminate\Support\Facades\Redirect;
 class FoodController extends Controller
 {
+    /**
+     * 新增一筆食物資料
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function create(Request $request){
+
+        $input = $request->except(['_token']);
+
+        //檢查input是否合
+        $validator = Validator::make($request->all(), [
+            'rsId' => 'required|numeric',
+            'fdName' => 'required',
+            'cId' => 'required|numeric',
+            'gram' => 'required|numeric|between:0,9999.9999',
+            'calorie' => 'required|numeric|between:0,9999.9999',
+            'protein' => 'required|numeric|between:0,9999.9999',
+            'fat' => 'required|numeric|between:0,9999.9999',
+            'saturatedFat' => 'required|numeric|between:0,9999.9999',
+            'transFat' => 'required|numeric|between:0,9999.9999',
+            'cholesterol' => 'required|numeric|between:0,9999.9999',
+            'carbohydrate' => 'required|numeric|between:0,9999.9999',
+            'sugar' => 'required|numeric|between:0,9999.9999',
+            'dietaryFiber' => 'required|numeric|between:0,9999.9999',
+            'sodium' => 'required|numeric|between:0,9999.9999',
+            'calcium' => 'required|numeric|between:0,9999.9999',
+            'potassium' => 'required|numeric|between:0,9999.9999',
+            'ferrum' => 'required|numeric|between:0,9999.9999',
+        ]);
+        if ($validator->passes()) {
+            //
+            $lastFdId = food::select('fdId')->orderBy('fdId','DESC')->first();
+            $input['photo'] = 'http://120.110.112.96/qrfood/img/'.($lastFdId->fdId+1).".".$request->photo->getClientOriginalExtension();
+            //把圖片放到伺服器上
+            $destination="C:\\xampp\\htdocs\\upload"; //放置圖片的位址(絕對路徑)
+            $request->photo->move($destination,$input['photo']);
+            $input['disable'] = 0;
+            food::create($input);
+            return Redirect::to('/');
+        }else{
+            return response()->json([
+                'status' => '403',
+                'message' => 'Failed',
+                'data' => [
+
+                ]
+            ], 400);
+        }
+
+    }
+
+    /**
+     * 更換食物的圖片
+     * @param Request $request
+     * @param $fdId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function editPhoto(Request $request,$fdId){
+
+            ;
+        $destination="C:\\xampp\\htdocs\\upload"; //放置圖片的位址(絕對路徑)
+        $extension = Input::file('file')->getClientOriginalExtension(); //取得副檔名
+        if($fdId < 10)
+            $fileName = '0'.$fdId .'.'.$extension;
+        else
+            $fileName = $fdId .'.'.$extension;
+
+        Input::file('file')->move($destination, $fileName);
+        try{
+            $food = food::withTrashed()->where('fdId',$fdId)->first();
+            $food->photo = "http://120.110.112.96/qrfood/img/".$fileName;
+            $food->save();
+            return response()->json([
+                'status' => '200',
+                'message' => 'Success',
+                'data' => [
+                    'photo' => $food->photo,
+                ]
+            ], 200);
+        }catch (Exception $e){
+            return response()->json([
+                'status' => '403',
+                'message' => 'Failed',
+                'data' => [
+
+                ]
+            ], 400);
+        }
+
+
+
+    }
+
+    public function showPatch($rsName)
+    {
+        $array = [];
+
+        $rsId = restaurant::select('rsId')->where('rsName',$rsName)->first();
+
+        $result = food::withTrashed()->with(['restaurant', 'category'])->where('rsId',$rsId->rsId)->get();
+//        return $rsId;
+
+        foreach ($result as $food) {
+            $arr = [];
+            $arr['fdId'] = $food['fdId'];
+            $arr['fdName'] = $food['fdName'];
+            $arr['rsId'] = $food['restaurant'][0]['rsId'];
+            $arr['rsName'] = $food['restaurant'][0]['rsName'];
+            $arr['cId'] = $food['category'][0]['cId'];
+            $arr['cName'] = $food['category'][0]['cName'];
+            //營養素
+            $arr['gram'] = $food['gram'];
+            $arr['calorie'] = $food['calorie'];
+            $arr['protein'] = $food['protein'];
+            $arr['fat'] = $food['fat'];
+            $arr['saturatedFat'] = $food['saturatedFat'];
+            $arr['transFat'] = $food['transFat'];
+            $arr['cholesterol'] = $food['cholesterol'];
+            $arr['carbohydrate'] = $food['carbohydrate'];
+            $arr['sugar'] = $food['sugar'];
+            $arr['dietaryFiber'] = $food['dietaryFiber'];
+            $arr['sodium'] = $food['sodium'];
+            $arr['calcium'] = $food['calcium'];
+            $arr['potassium'] = $food['potassium'];
+            $arr['ferrum'] = $food['ferrum'];
+            $arr['photo'] = $food['photo'];
+//            如果該資料被軟刪除的話 deleted_at  = 0
+            //else deleted_at = 1
+            if ($food['deleted_at'] == null) {
+                $arr['deleted_at'] = null;
+            } else {
+                $deleted_at = $food['deleted_at']->toArray();
+                $arr['deleted_at'] = $deleted_at['formatted'];
+            }
+
+
+            array_push($array, $arr);
+
+        }
+
+        return $array;
+    }
     /**
      * 取得所有所有食物的資料
      * @return array
@@ -45,18 +190,22 @@ class FoodController extends Controller
             $arr['potassium'] = $food['potassium'];
             $arr['ferrum'] = $food['ferrum'];
             $arr['photo'] = $food['photo'];
-            //如果該資料被軟刪除的話 deleted_at  = 0
-//            //else deleted_at = 1
-//            if ($food['deleted_at'] == null) {
-//                $arr['deleted_at'] = 0;
-//            } else {
-//                $arr['deleted_at'] = 1;
-//            }
-            $arr['deleted_at'] = $food['deleted_at'];
+//            如果該資料被軟刪除的話 deleted_at  = 0
+            //else deleted_at = 1
+            if ($food['deleted_at'] == null) {
+                $arr['deleted_at'] = null;
+            } else {
+                $deleted_at = $food['deleted_at']->toArray();
+                $arr['deleted_at'] = $deleted_at['formatted'];
+            }
+
+
             array_push($array, $arr);
+
         }
 
         return $array;
+
     }
 
     /**

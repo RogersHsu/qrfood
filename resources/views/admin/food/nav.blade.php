@@ -11,7 +11,7 @@
                 選擇食堂
             </a>
             <div class="dropdown-menu dropdown-menu-right " aria-labelledby="navbarDropdown">
-                @foreach($restaurantName as $key => $data)
+                @foreach($location as $key => $data)
                     <span class="dropdown-item nav_selectLocation_item">{{$data->location}}</span>
                 @endforeach
                 <script>
@@ -38,27 +38,19 @@
             </div>
         </li>
         <li class="nav-item">
-            <button class="btn btn-success">搜尋</button>
+            <button id = "btn_search" class="btn btn-success">搜尋</button>
         </li>
     </ul>
     <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
 
 
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-               aria-haspopup="true" aria-expanded="false">
-                新增
-            </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">單筆新增</a>
-                <a class="dropdown-item" href="#">批量新增</a>
-            </div>
-        </li>
+
         <li class="nav-item">
-            <button type="button" id="btn_nav_del" class="btn btn-primary" data-toggle="modal"
-                    data-target="#Modal_delete">
-                刪除
+            <button type="button" id="btn_nav_create" class="btn btn-primary" data-toggle="modal"
+                    data-target="#Modal_create">
+                新增
             </button>
+
         </li>
     </ul>
 </div>

@@ -13,6 +13,8 @@ class food extends Model
     use SoftDeletes;
     protected $dates = ['deleted_at'];
 
+    protected $guarded = [];
+
     public function restaurant(){
         return $this->hasMany('App\restaurant','rsId','rsId');
     }

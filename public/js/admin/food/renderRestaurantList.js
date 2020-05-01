@@ -2,7 +2,7 @@ $(document).ready(function () {
     $.ajax({
         type: 'GET',
         dataType: 'JSON',
-        url: APP_URL + '/api/admin/restaurant',
+        url: APP_URL + '/restaurant/groupByLocation',
         success: function (response) {
             linstenSelectLocation(response);
             listenSelectRestaurant(response);
@@ -14,6 +14,7 @@ function linstenSelectLocation(response) {
     $('#navbar_selectLocation').on("click", ".nav_selectLocation_item", function () {
         $("#navbar_selectLocation a").html($(this).text());
         $("#navbar_selectRestaurant a").css("pointer-events", "");
+        $("#navbar_selectRestaurant a").addClass("able");
         renderRestaurantList(response);
     });
 };
