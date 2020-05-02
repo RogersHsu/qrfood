@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Simple Sidebar - Start Bootstrap Template</title>
+    <title>@yield('title')</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/admin/bootstrap.min.css" rel="stylesheet">

@@ -1,7 +1,11 @@
 @extends('admin.master')
 
+@section('title')
+    食物管理
+@endsection
+
 @section('nav')
-    @include('admin/food.nav')
+    @include('admin/nav')
 @endsection
 
 @section('content')
