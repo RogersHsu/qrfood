@@ -53,7 +53,7 @@ class FoodController extends Controller
             $request->photo->move($destination,$input['photo']);
             $input['disable'] = 0;
             food::create($input);
-            return Redirect::to('/');
+            return Redirect::to('/manage_food');
         }else{
             return response()->json([
                 'status' => '403',

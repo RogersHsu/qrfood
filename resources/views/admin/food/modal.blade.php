@@ -211,7 +211,7 @@
                     </form>
                 </div>
                 <div class = "modal-footer">
-                    <input type="button" class="button" value="Upload" id="but_upload">
+                    <input type="button" class="btn btn-info" value="上傳" id="but_upload">
                 </div>
             </div>
         </div>
@@ -225,7 +225,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">查看/修改</h5>
+                <h5 class="modal-title" id="exampleModalLabel">建立食物資料</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -427,6 +427,31 @@
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{--說明文件:如何更改狀態--}}
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="Modal_statusExplanation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" i>如何更改狀態?</h5>
+            </div>
+            <div class="modal-body">
+                <span class="" style="background-color: #f5c6cb;border-radius:3px; padding: 3px; font-weight: bold;">雙擊</span>
+                <span class="" style="background-color: #f5c6cb;border-radius:3px; padding: 3px; font-weight: bold;">狀態按鈕</span>
+                即可更改狀態
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
