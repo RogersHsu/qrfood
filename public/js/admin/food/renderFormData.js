@@ -20,7 +20,6 @@ function drawDataTable(rsName){
         'dataType': 'JSON',
         'url':  url,
         'success': function (response) {
-            console.log(response);
             var datatable = $('#table').DataTable();
             datatable.clear().draw();
             datatable.rows.add(response); // Add new data
@@ -63,7 +62,7 @@ function renderDataTable(){
                     },
                     {
                         render: function (data, type, row, meta) {
-                            if (row.deleted_at == null)
+                            if (row.disable === 0)
                                 return '<button type = "button " class = "btn btn-success column_status">顯示中</button>';
                             else
                                 return '<button type = "button" class = "btn btn-danger column_status" >隱藏中</button>';
@@ -76,50 +75,55 @@ function renderDataTable(){
             });
 
 
-            controlFoodStatus(table);
-
-            var view_row; //被查看的那行
-            var view_row_data;
-            $('#table tbody').on('click', '.column_view', function (event) {
-
-                $(document).off("click", '#btn_view_submit'); //移除"修改"的監聽
-
-                view_row = table.row($(this).parent().parent());
-                view_row_data = view_row.data();
-                renderRsNameDropdown(view_row_data['rsName'], view_row_data['rsId']);
-                renderCategoryDropdown(view_row_data['cName'], view_row_data['cId']);
-                $('#modal_view_rsName').val(view_row_data['rsName']);
-                $('#modal_view_fdName').val(view_row_data['fdName']);
-                $('#modal_view_cName').val(view_row_data['cName']);
-                $('#modal_view_gram').val(view_row_data['gram']);
-                $('#modal_view_calorie').val(view_row_data['calorie']);
-                $('#modal_view_protein').val(view_row_data['protein']);
-                $('#modal_view_fat').val(view_row_data['fat']);
-                $('#modal_view_saturatedFat').val(view_row_data['saturatedFat']);
-                $('#modal_view_transFat').val(view_row_data['transFat']);
-                $('#modal_view_cholesterol').val(view_row_data['cholesterol']);
-                $('#modal_view_carbohydrate').val(view_row_data['carbohydrate']);
-                $('#modal_view_sugar').val(view_row_data['sugar']);
-                $('#modal_view_dietaryFiber').val(view_row_data['dietaryFiber']);
-                $('#modal_view_sodium').val(view_row_data['sodium']);
-                $('#modal_view_calcium').val(view_row_data['calcium']);
-                $('#modal_view_potassium').val(view_row_data['potassium']);
-                $('#modal_view_ferrum').val(view_row_data['ferrum']);
-
-                submitDataChange(view_row);//重送修改後的資料至後端
-
-                event.preventDefault();
-            });
+            changeFoodStatus(table);
+            openEditFoodDataView(table);
             openEditImageView();
         },
     });
 }
 
+/**
+ * 打開 食物資料的彈跳視窗
+ * @param table
+ */
+function openEditFoodDataView(table){
+    var view_row; //被查看的那行
+    var view_row_data;
+    $('#table tbody').on('click', '.column_view', function (event) {
+
+        $(document).off("click", '#btn_view_submit'); //移除"修改"的監聽
+
+        view_row = table.row($(this).parent().parent());
+        view_row_data = view_row.data();
+        renderRsNameDropdown(view_row_data['rsName'], view_row_data['rsId']);
+        renderCategoryDropdown(view_row_data['cName'], view_row_data['cId']);
+        $('#modal_view_rsName').val(view_row_data['rsName']);
+        $('#modal_view_fdName').val(view_row_data['fdName']);
+        $('#modal_view_cName').val(view_row_data['cName']);
+        $('#modal_view_gram').val(view_row_data['gram']);
+        $('#modal_view_calorie').val(view_row_data['calorie']);
+        $('#modal_view_protein').val(view_row_data['protein']);
+        $('#modal_view_fat').val(view_row_data['fat']);
+        $('#modal_view_saturatedFat').val(view_row_data['saturatedFat']);
+        $('#modal_view_transFat').val(view_row_data['transFat']);
+        $('#modal_view_cholesterol').val(view_row_data['cholesterol']);
+        $('#modal_view_carbohydrate').val(view_row_data['carbohydrate']);
+        $('#modal_view_sugar').val(view_row_data['sugar']);
+        $('#modal_view_dietaryFiber').val(view_row_data['dietaryFiber']);
+        $('#modal_view_sodium').val(view_row_data['sodium']);
+        $('#modal_view_calcium').val(view_row_data['calcium']);
+        $('#modal_view_potassium').val(view_row_data['potassium']);
+        $('#modal_view_ferrum').val(view_row_data['ferrum']);
+
+        submitDataChange(view_row);//重送修改後的資料至後端
+
+        // event.preventDefault();
+    });
+}
 function openEditImageView(){
     var defaultImageUrl; //原本的圖片
     $('#table tbody').on('click','.column_image',function(event){
         $(document).off('click', '#but_upload'); //移除"修改"的監聽
-
         //清除input內的file
         $('#file').val('');
         //拿到該欄位的資料
@@ -131,7 +135,6 @@ function openEditImageView(){
         $('#previewImage').attr('src',defaultImageUrl); //在預覽畫面放上原本的圖片
         //預覽
         $("#file").on('change',function() {
-
             if(checkfile() == true){ //判斷檔名是否是圖檔
                 readURL(this); //預覽上傳的圖片
                 var fileName = $(this).val().split("\\").pop();
@@ -179,11 +182,10 @@ function openEditImageView(){
  */
 function submitFoodImage(table,row){
     $(document).on('click',"#but_upload",function() {
-
         var form = $('#form_Image');
         if (form[0].checkValidity() === false) {
 
-        }else{
+            }else{
             var fdId = row.data()['fdId'];
             var fd = new FormData();
             var files = $('#file')[0].files[0];
@@ -200,7 +202,7 @@ function submitFoodImage(table,row){
                     // response = JSON.parse(response);
                     row.data()['photo']=response['data']['photo']+"?"+Math.random();
                     row.data(row.data()).draw();
-                    console.log(response);
+                    // console.log(response);
 
                 }
             });
@@ -251,12 +253,11 @@ function submitDataChange(view_row) {
                 contentType: "application/json;charset=utf-8",
                 success: function (response) {
                     var response = JSON.parse(response);
-                    console.log(response);
                     if (response.status == 1) {
                         view_row.data()['fdName'] = $('#modal_view_fdName').val();
-                        // view_row.data()['rsName'] = $("#modal_view_dropdown_rsName option:selected").text();
+                        view_row.data()['rsName'] = $("#modal_view_dropdown_rsName option:selected").text();
                         view_row.data()['rsId'] = $('#modal_view_dropdown_rsName').val();
-                        // view_row.data()['cName'] = $("#modal_view_dropdown_category option:selected").text();
+                        view_row.data()['cName'] = $("#modal_view_dropdown_category option:selected").text();
                         view_row.data()['cId'] = $('#modal_view_dropdown_category').val();
                         view_row.data()['gram'] = $('#modal_view_gram').val();
                         view_row.data()['calorie'] = $('#modal_view_calorie').val();
@@ -352,7 +353,7 @@ function renderRsNameDropdown(default_rsName, default_rsId) {
  * 用於更改表單上食物的"狀態"
  * @param table 表格
  */
-function controlFoodStatus(table) {
+function changeFoodStatus(table) {
     $('#table tbody').on('dblclick', '.column_status', function () {
 
         var row = table.row($(this).parent().parent());
@@ -360,10 +361,9 @@ function controlFoodStatus(table) {
         var fdId = rowData['fdId'];
         //建立傳送後端資料
         var dataJSON = {};
-        dataJSON['deleted_at'] = rowData['deleted_at'];
-        console.log( dataJSON['deleted_at']);
+        dataJSON['disable'] = rowData['disable'];
         //判斷該筆資料目前是隱藏還是顯示中的狀態,以進行更換狀態
-        if (rowData['deleted_at'] == null) {
+        if (rowData['disable'] === 0) {
             $.ajax({
                 url: APP_URL + '/food/' + fdId,
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -371,7 +371,7 @@ function controlFoodStatus(table) {
                 data: JSON.stringify(dataJSON),
                 contentType: "application/json;charset=utf-8",
                 success: function (response) {
-                    rowData['deleted_at'] = response.data.deleted_at;
+                    rowData['disable'] = 1;
                     row.data(rowData).draw(); //重新繪製rowData的資料
                     change_ModalStatus_style();
                 }
@@ -384,7 +384,7 @@ function controlFoodStatus(table) {
                 data: JSON.stringify(dataJSON),
                 contentType: "application/json;charset=utf-8",
                 success: function (response) {
-                    rowData['deleted_at'] = response.data.deleted_at;
+                    rowData['disable'] = 0;
                     row.data(rowData).draw(); //重新繪製rowData的資料
                     change_ModalStatus_style();
                 }

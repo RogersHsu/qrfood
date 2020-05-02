@@ -84,7 +84,8 @@ class FoodController extends Controller
 
         Input::file('file')->move($destination, $fileName);
         try{
-            $food = food::withTrashed()->where('fdId',$fdId)->first();
+            $food = food::where('fdId',$fdId)->first();
+//            $food->photo = "http://localhost/upload/".$fileName;
             $food->photo = "http://120.110.112.96/qrfood/img/".$fileName;
             $food->save();
             return response()->json([
@@ -114,8 +115,7 @@ class FoodController extends Controller
 
         $rsId = restaurant::select('rsId')->where('rsName',$rsName)->first();
 
-        $result = food::withTrashed()->with(['restaurant', 'category'])->where('rsId',$rsId->rsId)->get();
-//        return $rsId;
+        $result = food::with(['restaurant', 'category'])->where('rsId',$rsId->rsId)->get();
 
         foreach ($result as $food) {
             $arr = [];
@@ -140,16 +140,8 @@ class FoodController extends Controller
             $arr['calcium'] = $food['calcium'];
             $arr['potassium'] = $food['potassium'];
             $arr['ferrum'] = $food['ferrum'];
+            $arr['disable'] = $food['disable'];
             $arr['photo'] = $food['photo'];
-//            如果該資料被軟刪除的話 deleted_at  = 0
-            //else deleted_at = 1
-            if ($food['deleted_at'] == null) {
-                $arr['deleted_at'] = null;
-            } else {
-                $deleted_at = $food['deleted_at']->toArray();
-                $arr['deleted_at'] = $deleted_at['formatted'];
-            }
-
 
             array_push($array, $arr);
 
@@ -165,12 +157,13 @@ class FoodController extends Controller
     {
         $array = [];
 
-        $result = food::withTrashed()->with(['restaurant', 'category'])->get();
+        $result = food::with(['restaurant', 'category'])->get();
         foreach ($result as $food) {
             $arr = [];
             $arr['fdId'] = $food['fdId'];
             $arr['fdName'] = $food['fdName'];
             $arr['rsId'] = $food['restaurant'][0]['rsId'];
+            $arr['rsName'] = $food['restaurant'][0]['rsName'];
             $arr['rsName'] = $food['restaurant'][0]['rsName'];
             $arr['cId'] = $food['category'][0]['cId'];
             $arr['cName'] = $food['category'][0]['cName'];
@@ -189,16 +182,8 @@ class FoodController extends Controller
             $arr['calcium'] = $food['calcium'];
             $arr['potassium'] = $food['potassium'];
             $arr['ferrum'] = $food['ferrum'];
+            $arr['disable'] = $food['disable'];
             $arr['photo'] = $food['photo'];
-//            如果該資料被軟刪除的話 deleted_at  = 0
-            //else deleted_at = 1
-            if ($food['deleted_at'] == null) {
-                $arr['deleted_at'] = null;
-            } else {
-                $deleted_at = $food['deleted_at']->toArray();
-                $arr['deleted_at'] = $deleted_at['formatted'];
-            }
-
 
             array_push($array, $arr);
 
@@ -216,7 +201,6 @@ class FoodController extends Controller
     public function update(Request $request, $fdId)
     {
         $postJsonData = $request->getContent();
-//        return $fdId;
         //做資料驗證
         $ValidData = json_decode($postJsonData, true);
         $rules = [
@@ -261,7 +245,7 @@ class FoodController extends Controller
             //資料庫更新該筆資料
             $updateData = json_decode($postJsonData);
 
-            $Food = food::withTrashed()->where('fdId', $fdId)->first();
+            $Food = food::where('fdId', $fdId)->first();
 
             $Food->rsId = $updateData->rsId;
             $Food->fdName = $updateData->fdName;
@@ -300,17 +284,15 @@ class FoodController extends Controller
      */
     public function delete(Request $request, $fdId)
     {
-        $request = json_decode($request->getContent(), true);
-        if ($request['deleted_at'] == null) {
-            food::destroy($fdId);
-            $deleted_at = food::withTrashed()->select('deleted_at')->where('fdId', $fdId)->get();
+            $request = json_decode($request->getContent(), true);
+        if ($request['disable'] == 0) {
+            $food = food::find($fdId);
+            $food->disable = 1;
+            $food->save();
 
             return response()->json([
                 'status' => '200',
                 'message' => 'Change food status to hidden!',
-                'data' => [
-                    'deleted_at' => $deleted_at,
-                ]
             ], 200);
         } else {
             //未知錯誤
@@ -332,14 +314,14 @@ class FoodController extends Controller
     public function restore(Request $request, $fdId)
     {
         $request = json_decode($request->getContent(), true);
-        if ($request['deleted_at'] != null) {
-            food::withTrashed()->where('fdId', $fdId)->restore();
+        if ($request['disable'] == 1) {
+
+            $food = food::find($fdId);
+            $food->disable = 0;
+            $food->save();
             return response()->json([
                 'status' => '200',
                 'message' => 'Change food status to show!',
-                'data' => [
-                    'deleted_at' => null,
-                ]
             ], 200);
         } else {
             //未知錯誤
