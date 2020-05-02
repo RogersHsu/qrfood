@@ -45,7 +45,7 @@ class FoodController extends Controller
             'ferrum' => 'required|numeric|between:0,9999.9999',
         ]);
         if ($validator->passes()) {
-            //
+            //d
             $lastFdId = food::select('fdId')->orderBy('fdId','DESC')->first();
             $input['photo'] = 'http://120.110.112.96/qrfood/img/'.($lastFdId->fdId+1).".".$request->photo->getClientOriginalExtension();
             //把圖片放到伺服器上
