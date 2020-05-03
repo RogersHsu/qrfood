@@ -5,28 +5,44 @@
 
 $(document).ready(function () {
     renderDataTable();
-
     //查看指定餐廳
     $('#btn_search').on('click',function(){
         var rsName = $('#navbar_selectRestaurant a').text();
-        if($('#navbar_selectRestaurant a').hasClass("able") == true)
+        if($('#navbar_selectRestaurant a').hasClass("able") == true) {
             drawDataTable(rsName);
+        }
     });
 });
 function drawDataTable(rsName){
-    var url = APP_URL + "/food/" + rsName;
-    $.ajax({
-        'type': "GET",
-        'dataType': 'JSON',
-        'url':  url,
-        'success': function (response) {
-            var datatable = $('#table').DataTable();
-            datatable.clear().draw();
-            datatable.rows.add(response); // Add new data
-            datatable.draw(); // Redraw the DataTable
+    if(rsName === '不限餐廳'){
+        var url = APP_URL + "/food/";
+        $.ajax({
+            'type': "GET",
+            'dataType': 'JSON',
+            'url':  url,
+            'success': function (response) {
+                var datatable = $('#table').DataTable();
+                datatable.clear().draw();
+                datatable.rows.add(response); // Add new data
+                datatable.draw(); // Redraw the DataTable
 
-        }
-    });
+            }
+        });
+    }else{
+        var url = APP_URL + "/food/" + rsName;
+        $.ajax({
+            'type': "GET",
+            'dataType': 'JSON',
+            'url':  url,
+            'success': function (response) {
+                var datatable = $('#table').DataTable();
+                datatable.clear().draw();
+                datatable.rows.add(response); // Add new data
+                datatable.draw(); // Redraw the DataTable
+
+            }
+        });
+    }
 }
 function renderDataTable(){
     var url = APP_URL + "/food";

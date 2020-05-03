@@ -9,7 +9,9 @@
             @foreach($location as $key => $data)
                 <span class="dropdown-item nav_selectLocation_item" style="text-align: center;">{{$data->location}}</span>
             @endforeach
-            <script>
+                <span class="dropdown-item nav_selectLocation_item" style="text-align: center;">不限食堂</span>
+
+                <script>
                 $('#navbar_selectLocation .nav_selectLocation_item').on("click", function () {
                     $("#navbar_selectLocation a").html($(this).text());
                     $("#navbar_selectRestaurant a").css("pointer-events", "");
@@ -28,7 +30,7 @@
         </a>
 
         <div class="dropdown-menu dropdown-menu-left" aria-labelledby="navbarDropdown">
-            append restaurant data in JS
+
             <script src="js/admin/food/renderRestaurantList.js"></script>
         </div>
     </li>
