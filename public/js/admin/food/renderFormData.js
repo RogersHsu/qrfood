@@ -54,6 +54,11 @@ function renderDataTable(){
             //繪製DataTable
             var table = $('#table').DataTable({
                 "bInfo": false, //取消左下顯示Entries
+                fixedHeader: {
+                    header: true,
+                    // footer: true
+                },
+
                 data: response,
                 columns: [
                     {
@@ -89,7 +94,7 @@ function renderDataTable(){
 
                 ],
             });
-
+            table.fixedHeader.headerOffset( -6 );
 
             changeFoodStatus(table);
             openEditFoodDataView(table);
