@@ -24,7 +24,7 @@
 {{--    渲染food表格資料--}}
     <script src="{{asset('js/admin/food/renderFormData.js')}}"></script>
 
-    表單驗證JS
+
 
     <script type="text/javascript">
         var APP_URL ={!! json_encode(url('/')) !!};

@@ -44,13 +44,14 @@
     <li class="nav-item ml-auto">
         <button type="button" id="btn_nav_create" class="btn btn-warning" data-toggle="modal"
                 data-target="#Modal_create">
-            <i class="fas fa-plus" style = ></i>
+            <i class="fas fa-plus"></i>
+            新增食物
         </button>
 
     </li>
 </ul>
 </div>
-<div id="tableArea" class="container-fluid">
+<div id="tableArea" class="container-fluid mb-3">
         <table id="table" class="table table-striped table-bordered" style="text-align: center;width:100%;">
         <thead>
         <tr>
