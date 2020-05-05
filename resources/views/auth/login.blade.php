@@ -41,11 +41,11 @@
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
-                                <div class="checkbox">
+                                <!-- <div class="checkbox">
                                     <label>
                                         <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>記住我（30分鐘）
                                     </label>
-                                </div>
+                                </div> -->
                                 <div class="text-right">
                             
                                     <button type="submit" class="btn btn-primary">
