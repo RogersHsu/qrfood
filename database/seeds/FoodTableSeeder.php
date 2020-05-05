@@ -2241,7 +2241,7 @@ class FoodTableSeeder extends Seeder
             ),
             89 => 
             array (
-                'fdId' => 100,
+                
                 'rsId' => 2,
                 'fdName' => '青江菜',
                 'cId' => 1,
@@ -2266,7 +2266,7 @@ class FoodTableSeeder extends Seeder
             ),
             90 => 
             array (
-                'fdId' => 101,
+                
                 'rsId' => 2,
                 'fdName' => '空心菜',
                 'cId' => 1,
@@ -2291,7 +2291,7 @@ class FoodTableSeeder extends Seeder
             ),
             91 => 
             array (
-                'fdId' => 102,
+                
                 'rsId' => 2,
                 'fdName' => '麵筋',
                 'cId' => 4,
@@ -2316,7 +2316,7 @@ class FoodTableSeeder extends Seeder
             ),
             92 => 
             array (
-                'fdId' => 103,
+                
                 'rsId' => 2,
                 'fdName' => '大黃瓜炒黑輪',
                 'cId' => 4,
@@ -2341,7 +2341,7 @@ class FoodTableSeeder extends Seeder
             ),
             93 => 
             array (
-                'fdId' => 104,
+                
                 'rsId' => 2,
                 'fdName' => '培根炒蛋',
                 'cId' => 4,
@@ -2366,7 +2366,7 @@ class FoodTableSeeder extends Seeder
             ),
             94 => 
             array (
-                'fdId' => 105,
+                
                 'rsId' => 2,
                 'fdName' => '炒茄子',
                 'cId' => 1,
@@ -2391,7 +2391,7 @@ class FoodTableSeeder extends Seeder
             ),
             95 => 
             array (
-                'fdId' => 106,
+                
                 'rsId' => 3,
                 'fdName' => '豬肉炒泡麵',
                 'cId' => 4,
