@@ -12,6 +12,11 @@ $(document).ready(function () {
             drawDataTable(rsName);
         }
     });
+
+    $('#form_create').submit(function (event) {
+        event.preventDefault();
+    });
+    create();
 });
 function drawDataTable(rsName){
     if(rsName === '不限餐廳'){
@@ -43,6 +48,63 @@ function drawDataTable(rsName){
             }
         });
     }
+}
+function create(){
+    $(document).on('click','#btn_create_submit',function(){
+        var form = $('#form_create');
+        if(form[0].checkValidity() === false){
+
+        }else{
+            var fd = new FormData();
+            fd.append("rsId",$('#modal_create_rsId').val());
+            fd.append("fdName",$('#modal_create_fdName').val());
+            fd.append("cId",$('#modal_create_cId').val());
+            fd.append("gram",$('#modal_create_gram').val());
+            fd.append("protein",$('#modal_create_protein').val());
+            fd.append("calorie",$('#modal_create_calorie').val());
+            fd.append("fat",$('#modal_create_fat').val());
+            fd.append("saturatedFat",$('#modal_create_saturatedFat').val());
+            fd.append("transFat",$('#modal_create_transFat').val());
+            fd.append("cholesterol",$('#modal_create_cholesterol').val());
+            fd.append("carbohydrate",$('#modal_create_carbohydrate').val());
+            fd.append("sugar",$('#modal_create_sugar').val());
+            fd.append("dietaryFiber",$('#modal_create_dietaryFiber').val());
+            fd.append("sodium",$('#modal_create_sodium').val());
+            fd.append("calcium",$('#modal_create_calcium').val());
+            fd.append("potassium",$('#modal_create_potassium').val());
+            fd.append("ferrum",$('#modal_create_ferrum').val());
+            var image = $('#modal_create_image')[0].files[0];
+            fd.append("photo",image);
+
+            var url = APP_URL + "/food";
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: (fd),
+                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                contentType: false,
+                processData: false,
+                success:function(response){
+                    if(response.status === '200'){
+                        $data  = response.data;
+                        $data['rsName'] = $('#modal_create_rsId option:selected').text();
+                        $data['cName'] = $('#modal_create_cId option:selected').text();
+                        var $arr = [];
+                        $arr.push($data);
+                        var datatable = $('#table').DataTable();
+                        datatable.rows.add($arr); // Add new data
+                        datatable.draw(); // Redraw the DataTable
+                        $('#Modal_create').modal('hide');
+                        $('#Modal_success').modal('show');
+                    }
+                },
+            });        }
+
+        // var JsonData = {};
+        // JsonData['aa'] = 11;
+        // console.log(JsonData);
+        // console.log($('#modal_create_cId option:selected').html());
+    });
 }
 function renderDataTable(){
     var url = APP_URL + "/food";
@@ -99,10 +161,16 @@ function renderDataTable(){
             changeFoodStatus(table);
             openEditFoodDataView(table);
             openEditImageView();
+            openCreateView();
         },
     });
 }
-
+function openCreateView(){
+    //輸入內容淨空
+    $(document).on('click','#btn_nav_create',function(){
+        $('#form_create input').val('');
+    });
+}
 /**
  * 打開 食物資料的彈跳視窗
  * @param table
@@ -211,10 +279,11 @@ function submitFoodImage(table,row){
             var fd = new FormData();
             var files = $('#file')[0].files[0];
             fd.append('file', files);
+            fd.append('food',"aa");
             $.ajax({
                 url: APP_URL + '/food/' + fdId + '/photo',
                 type: 'POST',
-                headers: { 'Content-Type' : 'application/x-www-form-urlencoded'},
+                // headers: { 'Content-Type' : 'application/x-www-form-urlencoded'},
                 data: (fd),
                 headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 contentType: false,
@@ -223,7 +292,7 @@ function submitFoodImage(table,row){
                     // response = JSON.parse(response);
                     row.data()['photo']=response['data']['photo']+"?"+Math.random();
                     row.data(row.data()).draw();
-                    // console.log(response);
+                    console.log(response);
 
                 }
             });

@@ -183,7 +183,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                修改成功!
+                成功!
             </div>
 
         </div>
@@ -230,14 +230,14 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" id="del_tabledata_comfirm">
-                <form id="form_create" class="was-validated" action="{{url('/food')}}" method="POST"  enctype="multipart/form-data">
+            <div class="modal-body">
+                <form id="form_create" class="was-validated" action="" enctype="multipart/form-data">
 
                     {{ csrf_field() }}
                     <div class="form-row">
                         <div class="form-group col-md-3">
                             <label>餐廳名稱</label>
-                            <select name = "rsId" class="custom-select" required>
+                            <select id ="modal_create_rsId" name = "rsId" class="custom-select" required>
                                 @foreach($restaurant as $key => $data)
                                     <option value="{{$data->rsId}}">{{$data->rsName}}</option>
                                 @endforeach
@@ -254,7 +254,7 @@
                         </div>
                         <div class="form-group col-md-3">
                             <label>分類</label>
-                            <select name ="cId" id="modal_create_dropdown_category" class="custom-select" required>
+                            <select id ="modal_create_cId" name ="cId" id="modal_create_dropdown_category" class="custom-select" required>
                                 @foreach($category as $key => $data)
                                     <option value="{{$data->cId}}">{{$data->cName}}</option>
                                 @endforeach

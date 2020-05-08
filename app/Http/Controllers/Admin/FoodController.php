@@ -22,9 +22,8 @@ class FoodController extends Controller
      */
     public function create(Request $request){
 
-        $input = $request->except(['_token']);
-
-        //檢查input是否合
+        $input = $request->all();
+//        //檢查input是否合
         $validator = Validator::make($request->all(), [
             'rsId' => 'required|numeric',
             'fdName' => 'required',
@@ -43,18 +42,26 @@ class FoodController extends Controller
             'calcium' => 'required|numeric|between:0,9999.9999',
             'potassium' => 'required|numeric|between:0,9999.9999',
             'ferrum' => 'required|numeric|between:0,9999.9999',
+            'photo' => 'mimes:jpeg,bmp,png'
         ]);
         if ($validator->passes()) {
-            //d
             $lastFdId = food::select('fdId')->orderBy('fdId','DESC')->first();
-            $input['photo'] = 'http://qrfood.tw/qrfood/img/'.($lastFdId->fdId+1).".".$request->photo->getClientOriginalExtension();
-            //把圖片放到伺服器上
-            $destination="C:\\xampp\\htdocs\\qrfood\\img"; //放置圖片的位址(絕對路徑)
+            $input['photo'] = 'http://localhost/upload/'.($lastFdId->fdId+1).".".$request->photo->getClientOriginalExtension();
+//            $input['photo'] = 'http://qrfood.tw/qrfood/img/'.($lastFdId->fdId+1).".".$request->photo->getClientOriginalExtension();
+//            //把圖片放到伺服器上
+            $destination="C:\\xampp\\htdocs\\upload"; //放置圖片的位址(絕對路徑)
+
+//            $destination="C:\\xampp\\htdocs\\qrfood\\img"; //放置圖片的位址(絕對路徑)
             $request->photo->move($destination,$input['photo']);
             $input['disable'] = 0;
-            food::create($input);
-            return Redirect::to('/manage_food');
+            $create = food::create($input);
+            return response()->json([
+                'status' => '200',
+                'message' => 'create success',
+                'data' => $create,
+                ], 200);
         }else{
+//            return "aa";
             return response()->json([
                 'status' => '403',
                 'message' => 'Failed',
@@ -63,7 +70,7 @@ class FoodController extends Controller
                 ]
             ], 400);
         }
-
+//
     }
 
     /**
@@ -73,8 +80,9 @@ class FoodController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function editPhoto(Request $request,$fdId){
+        $destination="C:\\xampp\\htdocs\\upload"; //放置圖片的位址(絕對路徑)
 
-        $destination="C:\\xampp\\htdocs\\qrfood\\img"; //放置圖片的位址(絕對路徑)
+//        $destination="C:\\xampp\\htdocs\\qrfood\\img"; //放置圖片的位址(絕對路徑)
         $extension = Input::file('file')->getClientOriginalExtension(); //取得副檔名
         if($fdId < 10)
             $fileName = '0'.$fdId .'.'.$extension;
@@ -84,8 +92,8 @@ class FoodController extends Controller
         Input::file('file')->move($destination, $fileName);
         try{
             $food = food::where('fdId',$fdId)->first();
-//            $food->photo = "http://localhost/upload/".$fileName;
-            $food->photo = "http://qrfood.tw/qrfood/img/".$fileName;
+            $food->photo = "http://localhost/upload/".$fileName;
+//            $food->photo = "http://qrfood.tw/qrfood/img/".$fileName;
             $food->save();
             return response()->json([
                 'status' => '200',
