@@ -396,10 +396,12 @@
                                 <div class="invalid-feedback">可接受的副檔名有.jpg .png</div>
                                 <label class="custom-file-label" for="customFile">選擇圖片</label>
                             </div>
+
                             <script>
                                 $("#modal_create_image").on('change',function() {
 
                                     if(checkfile() == true){ //判斷檔名是否是圖檔
+                                        readURL(this);
                                         var fileName = $(this).val().split("\\").pop();
                                         $(this).siblings(".custom-file-label").addClass("selected").html(fileName); //input的文字變成上傳的檔名
                                     }else{ //
@@ -419,7 +421,24 @@
                                         return true;
                                     }
                                 }
+                                function readURL(input){
+                                    if (input.files && input.files[0]) {
+                                        var reader = new FileReader();
+
+                                        reader.onload = function(e) {
+                                            $('#modal_create_previewImage').attr('src', e.target.result);
+                                        }
+
+                                        reader.readAsDataURL(input.files[0]); // convert to base64 string
+                                    }
+                                }
                             </script>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div>
+
+                            <img id="modal_create_previewImage" style="height:50px;">
                         </div>
                     </div>
                     <div class="modal-footer">

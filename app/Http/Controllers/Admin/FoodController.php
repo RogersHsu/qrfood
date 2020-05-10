@@ -46,12 +46,10 @@ class FoodController extends Controller
         ]);
         if ($validator->passes()) {
             $lastFdId = food::select('fdId')->orderBy('fdId','DESC')->first();
-            $input['photo'] = 'http://localhost/upload/'.($lastFdId->fdId+1).".".$request->photo->getClientOriginalExtension();
-//            $input['photo'] = 'http://qrfood.tw/qrfood/img/'.($lastFdId->fdId+1).".".$request->photo->getClientOriginalExtension();
-//            //把圖片放到伺服器上
-            $destination="C:\\xampp\\htdocs\\upload"; //放置圖片的位址(絕對路徑)
-
-//            $destination="C:\\xampp\\htdocs\\qrfood\\img"; //放置圖片的位址(絕對路徑)
+//            $input['photo'] = 'http://localhost/upload/'.($lastFdId->fdId+1).".".$request->photo->getClientOriginalExtension();
+//            $destination="C:\\xampp\\htdocs\\upload"; //放置圖片的位址(絕對路徑)
+            $input['photo'] = 'http://qrfood.tw/qrfood/img/'.($lastFdId->fdId+1).".".$request->photo->getClientOriginalExtension();
+            $destination="C:\\xampp\\htdocs\\qrfood\\img"; //放置圖片的位址(絕對路徑)
             $request->photo->move($destination,$input['photo']);
             $input['disable'] = 0;
             $create = food::create($input);

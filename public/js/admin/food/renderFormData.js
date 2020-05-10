@@ -6,9 +6,9 @@
 $(document).ready(function () {
     renderDataTable();
     //查看指定餐廳
-    $('#btn_search').on('click',function(){
+    $('#btn_search').on('click', function () {
         var rsName = $('#navbar_selectRestaurant a').text();
-        if($('#navbar_selectRestaurant a').hasClass("able") == true) {
+        if ($('#navbar_selectRestaurant a').hasClass("able") == true) {
             drawDataTable(rsName);
         }
     });
@@ -18,13 +18,14 @@ $(document).ready(function () {
     });
     create();
 });
-function drawDataTable(rsName){
-    if(rsName === '不限餐廳'){
+
+function drawDataTable(rsName) {
+    if (rsName === '不限餐廳') {
         var url = APP_URL + "/food/";
         $.ajax({
             'type': "GET",
             'dataType': 'JSON',
-            'url':  url,
+            'url': url,
             'success': function (response) {
                 var datatable = $('#table').DataTable();
                 datatable.clear().draw();
@@ -33,12 +34,12 @@ function drawDataTable(rsName){
 
             }
         });
-    }else{
+    } else {
         var url = APP_URL + "/food/" + rsName;
         $.ajax({
             'type': "GET",
             'dataType': 'JSON',
-            'url':  url,
+            'url': url,
             'success': function (response) {
                 var datatable = $('#table').DataTable();
                 datatable.clear().draw();
@@ -49,44 +50,45 @@ function drawDataTable(rsName){
         });
     }
 }
-function create(){
-    $(document).on('click','#btn_create_submit',function(){
-        var form = $('#form_create');
-        if(form[0].checkValidity() === false){
 
-        }else{
+function create() {
+    $(document).on('click', '#btn_create_submit', function () {
+        var form = $('#form_create');
+        if (form[0].checkValidity() === false) {
+
+        } else {
             var fd = new FormData();
-            fd.append("rsId",$('#modal_create_rsId').val());
-            fd.append("fdName",$('#modal_create_fdName').val());
-            fd.append("cId",$('#modal_create_cId').val());
-            fd.append("gram",$('#modal_create_gram').val());
-            fd.append("protein",$('#modal_create_protein').val());
-            fd.append("calorie",$('#modal_create_calorie').val());
-            fd.append("fat",$('#modal_create_fat').val());
-            fd.append("saturatedFat",$('#modal_create_saturatedFat').val());
-            fd.append("transFat",$('#modal_create_transFat').val());
-            fd.append("cholesterol",$('#modal_create_cholesterol').val());
-            fd.append("carbohydrate",$('#modal_create_carbohydrate').val());
-            fd.append("sugar",$('#modal_create_sugar').val());
-            fd.append("dietaryFiber",$('#modal_create_dietaryFiber').val());
-            fd.append("sodium",$('#modal_create_sodium').val());
-            fd.append("calcium",$('#modal_create_calcium').val());
-            fd.append("potassium",$('#modal_create_potassium').val());
-            fd.append("ferrum",$('#modal_create_ferrum').val());
+            fd.append("rsId", $('#modal_create_rsId').val());
+            fd.append("fdName", $('#modal_create_fdName').val());
+            fd.append("cId", $('#modal_create_cId').val());
+            fd.append("gram", $('#modal_create_gram').val());
+            fd.append("protein", $('#modal_create_protein').val());
+            fd.append("calorie", $('#modal_create_calorie').val());
+            fd.append("fat", $('#modal_create_fat').val());
+            fd.append("saturatedFat", $('#modal_create_saturatedFat').val());
+            fd.append("transFat", $('#modal_create_transFat').val());
+            fd.append("cholesterol", $('#modal_create_cholesterol').val());
+            fd.append("carbohydrate", $('#modal_create_carbohydrate').val());
+            fd.append("sugar", $('#modal_create_sugar').val());
+            fd.append("dietaryFiber", $('#modal_create_dietaryFiber').val());
+            fd.append("sodium", $('#modal_create_sodium').val());
+            fd.append("calcium", $('#modal_create_calcium').val());
+            fd.append("potassium", $('#modal_create_potassium').val());
+            fd.append("ferrum", $('#modal_create_ferrum').val());
             var image = $('#modal_create_image')[0].files[0];
-            fd.append("photo",image);
+            fd.append("photo", image);
 
             var url = APP_URL + "/food";
             $.ajax({
                 url: url,
                 type: 'POST',
                 data: (fd),
-                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 contentType: false,
                 processData: false,
-                success:function(response){
-                    if(response.status === '200'){
-                        $data  = response.data;
+                success: function (response) {
+                    if (response.status === '200') {
+                        $data = response.data;
                         $data['rsName'] = $('#modal_create_rsId option:selected').text();
                         $data['cName'] = $('#modal_create_cId option:selected').text();
                         var $arr = [];
@@ -98,20 +100,18 @@ function create(){
                         $('#Modal_success').modal('show');
                     }
                 },
-            });        }
+            });
+        }
 
-        // var JsonData = {};
-        // JsonData['aa'] = 11;
-        // console.log(JsonData);
-        // console.log($('#modal_create_cId option:selected').html());
     });
 }
-function renderDataTable(){
+
+function renderDataTable() {
     var url = APP_URL + "/food";
     $.ajax({
         'type': "GET",
         'dataType': 'JSON',
-        'url':  url,
+        'url': url,
         'success': function (response) {
             //繪製DataTable
             var table = $('#table').DataTable({
@@ -130,7 +130,7 @@ function renderDataTable(){
                     },
                     {
                         render: function (data, type, row, meta) {
-                            return '<img style="height:50px;" src=' + row.photo + '>';
+                            return '<img class="column_image" style="height:50px;" src=' + row.photo + '>';
                         }
                     },
                     {
@@ -140,7 +140,7 @@ function renderDataTable(){
                     },
                     {
                         render: function (data, type, row, meta) {
-                            return "<button class='btn btn-info column_image' data-toggle='modal' data-target='#Modal_image'>更換</button>"
+                            return "<button class='btn btn-info column_editImage' data-toggle='modal' data-target='#Modal_image'>更換</button>"
                         }
                     },
                     {
@@ -156,7 +156,7 @@ function renderDataTable(){
 
                 ],
             });
-            table.fixedHeader.headerOffset( -6 );
+            table.fixedHeader.headerOffset(-6);
 
             changeFoodStatus(table);
             openEditFoodDataView(table);
@@ -165,17 +165,19 @@ function renderDataTable(){
         },
     });
 }
-function openCreateView(){
+
+function openCreateView() {
     //輸入內容淨空
-    $(document).on('click','#btn_nav_create',function(){
+    $(document).on('click', '#btn_nav_create', function () {
         $('#form_create input').val('');
     });
 }
+
 /**
  * 打開 食物資料的彈跳視窗
  * @param table
  */
-function openEditFoodDataView(table){
+function openEditFoodDataView(table) {
     var view_row; //被查看的那行
     var view_row_data;
     $('#table tbody').on('click', '.column_view', function (event) {
@@ -209,56 +211,67 @@ function openEditFoodDataView(table){
         // event.preventDefault();
     });
 }
-function openEditImageView(){
+
+function openEditImageView() {
     var defaultImageUrl; //原本的圖片
-    $('#table tbody').on('click','.column_image',function(event){
+    $('#table tbody').on('click', '.column_image', function (event) {
+        $('#Modal_image').modal('show');
+        editImage($(this));
+    });
+    $('#table tbody').on('click', '.column_editImage', function (event) {
+        editImage($(this));
+    });
+
+    function editImage(This) {
         $(document).off('click', '#but_upload'); //移除"修改"的監聽
         //清除input內的file
         $('#file').val('');
         //拿到該欄位的資料
         var table = $('#table').DataTable();
-        var row = table.row($(this).parent().parent());
+        var row = table.row(This.parent().parent());
         var fdId = row.data()['fdId'];
         defaultImageUrl = row.data()['photo'];
 
-        $('#previewImage').attr('src',defaultImageUrl); //在預覽畫面放上原本的圖片
+        $('#previewImage').attr('src', defaultImageUrl); //在預覽畫面放上原本的圖片
         //預覽
-        $("#file").on('change',function() {
-            if(checkfile() == true){ //判斷檔名是否是圖檔
+        $("#file").on('change', function () {
+            if (checkfile() === true) { //判斷檔名是否是圖檔
                 readURL(this); //預覽上傳的圖片
                 var fileName = $(this).val().split("\\").pop();
                 $(this).siblings(".custom-file-label").addClass("selected").html(fileName); //input的文字變成上傳的檔名
-            }else{ //
+            } else { //
                 $('#file').val(''); //清空input
                 $(this).siblings(".custom-file-label").addClass("selected").html(''); //input的文字變成空白
                 $(this).next().html('可接受的副檔名有.jpg .png'); //錯誤提醒
-                $(' #previewImage').attr('src',defaultImageUrl); //畫面變為原本的圖片
+                $(' #previewImage').attr('src', defaultImageUrl); //畫面變為原本的圖片
             }
         });
 
-        submitFoodImage(table,row); //送出更換請求
+        submitFoodImage(table, row); //送出更換請求
 
-    });
-    function readURL(input){
+    }
+
+    function readURL(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
 
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 $('#previewImage').attr('src', e.target.result);
             }
 
             reader.readAsDataURL(input.files[0]); // convert to base64 string
         }
     }
+
     // Add the following code if you want the name of the file appear on select
     //判斷檔名是否是圖檔
     function checkfile() {
-        var validExts = new Array(".png", ".jpg",".jpeg");
+        var validExts = new Array(".png", ".jpg", ".jpeg");
         var fileExt = $('#file').val();
         fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
         if (validExts.indexOf(fileExt) < 0) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
@@ -269,29 +282,31 @@ function openEditImageView(){
  * @param table
  * @param row
  */
-function submitFoodImage(table,row){
-    $(document).on('click',"#but_upload",function() {
+function submitFoodImage(table, row) {
+    $(document).on('click', "#but_upload", function () {
         var form = $('#form_Image');
         if (form[0].checkValidity() === false) {
 
-            }else{
+        } else {
             var fdId = row.data()['fdId'];
             var fd = new FormData();
             var files = $('#file')[0].files[0];
             fd.append('file', files);
-            fd.append('food',"aa");
+            fd.append('food', "aa");
             $.ajax({
                 url: APP_URL + '/food/' + fdId + '/photo',
                 type: 'POST',
                 // headers: { 'Content-Type' : 'application/x-www-form-urlencoded'},
                 data: (fd),
-                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 contentType: false,
                 processData: false,
-                success: function(response) {
+                success: function (response) {
                     // response = JSON.parse(response);
-                    row.data()['photo']=response['data']['photo']+"?"+Math.random();
+                    row.data()['photo'] = response['data']['photo'] + "?" + Math.random();
                     row.data(row.data()).draw();
+                    $('#Modal_image').modal('hide');
+                    $('#Modal_success').modal('show');
                     console.log(response);
 
                 }
