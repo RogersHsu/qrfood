@@ -183,7 +183,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                修改成功!
+                成功!
             </div>
 
         </div>
@@ -230,14 +230,14 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" id="del_tabledata_comfirm">
-                <form id="form_create" class="was-validated" action="{{url('/food')}}" method="POST"  enctype="multipart/form-data">
+            <div class="modal-body">
+                <form id="form_create" class="was-validated" action="" enctype="multipart/form-data">
 
                     {{ csrf_field() }}
                     <div class="form-row">
                         <div class="form-group col-md-3">
                             <label>餐廳名稱</label>
-                            <select name = "rsId" class="custom-select" required>
+                            <select id ="modal_create_rsId" name = "rsId" class="custom-select" required>
                                 @foreach($restaurant as $key => $data)
                                     <option value="{{$data->rsId}}">{{$data->rsName}}</option>
                                 @endforeach
@@ -254,7 +254,7 @@
                         </div>
                         <div class="form-group col-md-3">
                             <label>分類</label>
-                            <select name ="cId" id="modal_create_dropdown_category" class="custom-select" required>
+                            <select id ="modal_create_cId" name ="cId" id="modal_create_dropdown_category" class="custom-select" required>
                                 @foreach($category as $key => $data)
                                     <option value="{{$data->cId}}">{{$data->cName}}</option>
                                 @endforeach
@@ -396,10 +396,12 @@
                                 <div class="invalid-feedback">可接受的副檔名有.jpg .png</div>
                                 <label class="custom-file-label" for="customFile">選擇圖片</label>
                             </div>
+
                             <script>
                                 $("#modal_create_image").on('change',function() {
 
                                     if(checkfile() == true){ //判斷檔名是否是圖檔
+                                        readURL(this);
                                         var fileName = $(this).val().split("\\").pop();
                                         $(this).siblings(".custom-file-label").addClass("selected").html(fileName); //input的文字變成上傳的檔名
                                     }else{ //
@@ -419,7 +421,24 @@
                                         return true;
                                     }
                                 }
+                                function readURL(input){
+                                    if (input.files && input.files[0]) {
+                                        var reader = new FileReader();
+
+                                        reader.onload = function(e) {
+                                            $('#modal_create_previewImage').attr('src', e.target.result);
+                                        }
+
+                                        reader.readAsDataURL(input.files[0]); // convert to base64 string
+                                    }
+                                }
                             </script>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div>
+
+                            <img id="modal_create_previewImage" style="height:50px;">
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -1,4 +1,4 @@
-<div style="padding-top:10px;padding-bottom:20px;">
+<div style="padding-top:0px;padding-bottom:0px;">
 <ul class="nav ml-auto mt-2 mt-lg-0">
     <li class="nav-item dropdown ml-auto" id="navbar_selectLocation">
         <a class="nav-link dropdown-toggle btn btn-info" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
