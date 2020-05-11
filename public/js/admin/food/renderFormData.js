@@ -130,7 +130,7 @@ function renderDataTable() {
                     },
                     {
                         render: function (data, type, row, meta) {
-                            return '<img class="column_image" style="height:50px;" src=' + row.photo + '>';
+                            return '<img class="column_image" style="height:50px;" src=' + "http://qrfood.tw/qrfood/img/" + row.photo + '>';
                         }
                     },
                     {
@@ -230,9 +230,8 @@ function openEditImageView() {
         var table = $('#table').DataTable();
         var row = table.row(This.parent().parent());
         var fdId = row.data()['fdId'];
-        defaultImageUrl = row.data()['photo'];
-
-        $('#previewImage').attr('src', defaultImageUrl); //在預覽畫面放上原本的圖片
+        defaultImageUrl = "http://qrfood.tw/qrfood/img/" + row.data()['photo'];
+        $('#previewImage').attr('src',defaultImageUrl); //在預覽畫面放上原本的圖片
         //預覽
         $("#file").on('change', function () {
             if (checkfile() === true) { //判斷檔名是否是圖檔
@@ -292,7 +291,6 @@ function submitFoodImage(table, row) {
             var fd = new FormData();
             var files = $('#file')[0].files[0];
             fd.append('file', files);
-            fd.append('food', "aa");
             $.ajax({
                 url: APP_URL + '/food/' + fdId + '/photo',
                 type: 'POST',
@@ -307,7 +305,6 @@ function submitFoodImage(table, row) {
                     row.data(row.data()).draw();
                     $('#Modal_image').modal('hide');
                     $('#Modal_success').modal('show');
-                    console.log(response);
 
                 }
             });

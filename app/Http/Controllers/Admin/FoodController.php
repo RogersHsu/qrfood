@@ -48,7 +48,7 @@ class FoodController extends Controller
             $lastFdId = food::select('fdId')->orderBy('fdId','DESC')->first();
 //            $input['photo'] = 'http://localhost/upload/'.($lastFdId->fdId+1).".".$request->photo->getClientOriginalExtension();
 //            $destination="C:\\xampp\\htdocs\\upload"; //放置圖片的位址(絕對路徑)
-            $input['photo'] = 'http://qrfood.tw/qrfood/img/'.($lastFdId->fdId+1).".".$request->photo->getClientOriginalExtension();
+            $input['photo'] = ($lastFdId->fdId+1).".".$request->photo->getClientOriginalExtension();
             $destination="C:\\xampp\\htdocs\\qrfood\\img"; //放置圖片的位址(絕對路徑)
             $request->photo->move($destination,$input['photo']);
             $input['disable'] = 0;
@@ -78,9 +78,9 @@ class FoodController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function editPhoto(Request $request,$fdId){
-        $destination="C:\\xampp\\htdocs\\upload"; //放置圖片的位址(絕對路徑)
+//        $destination="C:\\xampp\\htdocs\\upload"; //放置圖片的位址(絕對路徑)
 
-//        $destination="C:\\xampp\\htdocs\\qrfood\\img"; //放置圖片的位址(絕對路徑)
+        $destination="C:\\xampp\\htdocs\\qrfood\\img"; //放置圖片的位址(絕對路徑)
         $extension = Input::file('file')->getClientOriginalExtension(); //取得副檔名
         if($fdId < 10)
             $fileName = '0'.$fdId .'.'.$extension;
@@ -90,8 +90,8 @@ class FoodController extends Controller
         Input::file('file')->move($destination, $fileName);
         try{
             $food = food::where('fdId',$fdId)->first();
-            $food->photo = "http://localhost/upload/".$fileName;
-//            $food->photo = "http://qrfood.tw/qrfood/img/".$fileName;
+//            $food->photo = "http://localhost/upload/".$fileName;
+            $food->photo = $fileName;
             $food->save();
             return response()->json([
                 'status' => '200',
