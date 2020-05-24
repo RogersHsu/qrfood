@@ -15,6 +15,7 @@ use Exception;
 use Illuminate\Support\Facades\Redirect;
 class FoodController extends Controller
 {
+
     /**
      * 新增一筆食物資料
      * @param Request $request
@@ -68,9 +69,121 @@ class FoodController extends Controller
                 ]
             ], 400);
         }
-//
     }
+    public function createExcel(Request $request){
+        $excel = $request->excel;
+        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader('Xlsx');
+        $reader->setReadDataOnly(true);
+        $reader->setReadEmptyCells(false);
+        $spreadsheet = $reader->load($excel);
 
+        $HighestRow = $spreadsheet->getActiveSheet()->getHighestRow();
+
+        $array = array();
+        $restaurant = restaurant::all();
+        $category = category::all();
+        $currentFdId = food::select('fdId')->orderBy('fdId', 'DESC')->first()->fdId;
+        $imageId = $currentFdId + 1;
+        for($row = 2 ; $row <= $HighestRow;$row++){
+            $rsName = $spreadsheet->getActiveSheet()->getCellByColumnAndRow(2,$row)->getValue();
+            $cName = $spreadsheet->getActiveSheet()->getCellByColumnAndRow(3,$row)->getValue();
+
+            //rsName convert to rsId
+            foreach($restaurant as $key  => $res){
+                if($rsName == $res->rsName){
+                    $rsId = $res->rsId;
+                    break;
+                }
+                if(($key +1 ) == count($restaurant)){
+                    if($rsName != $res->rsName){
+                        return response()->json([
+                            'status' => '0',
+                            'message' =>  "第".$row."行查無此餐廳名稱!",
+                            'data' => [
+                            ]
+                        ], 200);
+                    }
+                }
+            }
+            //cName convert to cId
+            foreach($category as $key  => $c){
+                if($cName == $c->cName){
+                    $cId = $c->cId;
+                    break;
+                }
+                if(($key +1 ) == count($category)){
+                    if($cName != $c->cName){
+                        return response()->json([
+                            'status' => '0',
+                            'message' => "第".$row."行查無此食物種類!",
+                            'data' => [
+
+                            ]
+                        ], 200);
+                    }
+                }
+            }
+            //add food image name
+            $imageName = "http://qrfood.tw/qrfood/img/".$imageId.".jpg";
+            $imageId ++ ;
+            $arr = [
+                "rsId" => $rsId,
+                "fdName" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(1, $row)->getValue(),
+                "cId" => $cId,
+                "gram" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(4,$row)->getValue(),
+                "calorie" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(5,$row)->getValue(),
+                "protein" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(6,$row)->getValue(),
+                "fat" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(7,$row)->getValue(),
+                "saturatedFat" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(8,$row)->getValue(),
+                "transFat" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(9,$row)->getValue(),
+                "cholesterol" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(10,$row)->getValue(),
+                "carbohydrate" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(11,$row)->getValue(),
+                "sugar" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(12,$row)->getValue(),
+                "dietaryFiber" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(13,$row)->getValue(),
+                "sodium" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(14,$row)->getValue(),
+                "calcium" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(15,$row)->getValue(),
+                "potassium" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(16,$row)->getValue(),
+                "ferrum" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(17,$row)->getValue(),
+                "disable" => 0,
+                "photo" => $imageName,
+            ];
+            $validator = Validator::make($arr, [
+                "rsId" => 'required',
+                "fdName" => 'required',
+                "cId" => 'required',
+                "gram" => 'required|numeric|min:0',
+                "calorie" => 'required|numeric|min:0',
+                "protein" => 'required|numeric|min:0',
+                "fat" => 'required|numeric|min:0',
+                "saturatedFat" => 'required|numeric|min:0',
+                "transFat" => 'required|numeric|min:0',
+                "cholesterol" => 'required|numeric|min:0',
+                "carbohydrate" => 'required|numeric|min:0',
+                "sugar" => 'required|numeric|min:0',
+                "dietaryFiber" => 'required|numeric|min:0',
+                "sodium" => 'required|numeric|min:0',
+                "calcium" => 'required|numeric|min:0',
+                "potassium" => 'required|numeric|min:0',
+                "ferrum" => 'required|numeric|min:0',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => '0',
+                    'message' => "row".$row." :". $validator->messages()->first(),
+                    'data' => [
+                    ]
+                ], 200);
+            }
+            array_push($array,$arr);
+        }
+        food::insert($array);
+        return response()->json([
+            'status' => 1,
+            'message' => "success",
+            'data' => []
+        ], 200);
+    }
     /**
      * 更換食物的圖片
      * @param Request $request

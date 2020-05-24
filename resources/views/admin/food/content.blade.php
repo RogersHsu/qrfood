@@ -41,13 +41,26 @@
         </a>
     </li>
 
-    <li class="nav-item ml-auto">
-        <button type="button" id="btn_nav_create" class="btn btn-warning" data-toggle="modal"
-                data-target="#Modal_create">
+    <li class="nav-item ml-auto dropdown">
+        <a type="button" id="btn_nav_create" class="btn btn-warning nav-link dropdown-toggle" data-toggle="dropdown">
             <i class="fas fa-plus"></i>
             新增食物
-        </button>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
 
+            <span class="dropdown-item content_insertSingle_item" style="text-align: center;">單筆新增</span>
+            <span class="dropdown-item content_insertExcel_item" style="text-align: center;">匯入EXCEL</span>
+            <script>
+                $(".content_insertSingle_item").on("click",function(){
+
+                    $('#Modal_create').modal('show');
+                });
+                $(".content_insertExcel_item").on("click",function(){
+
+                    $('#Modal_create_excel').modal('show');
+                });
+            </script>
+        </div>
     </li>
 </ul>
 </div>

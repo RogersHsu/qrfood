@@ -12,11 +12,10 @@ $(document).ready(function () {
             drawDataTable(rsName);
         }
     });
-
-    $('#form_create').submit(function (event) {
+    $('#form_create_excel').submit(function(event){
         event.preventDefault();
     });
-    create();
+    addExcel();
 });
 
 function drawDataTable(rsName) {
@@ -52,6 +51,9 @@ function drawDataTable(rsName) {
 }
 
 function create() {
+    $('#form_create').submit(function (event) {
+        event.preventDefault();
+    });
     $(document).on('click', '#btn_create_submit', function () {
         var form = $('#form_create');
         if (form[0].checkValidity() === false) {
@@ -97,6 +99,42 @@ function create() {
                         datatable.rows.add($arr); // Add new data
                         datatable.draw(); // Redraw the DataTable
                         $('#Modal_create').modal('hide');
+                        $('#Modal_success').modal('show');
+                    }
+                },
+            });
+        }
+
+    });
+}
+
+function addExcel() {
+
+    $(document).on('click', '#btn_createExcel_submit', function () {
+        var form = $('#form_create_excel');
+        if (form[0].checkValidity() === false) {
+
+        } else {
+            var fd = new FormData();
+            fd.append("excel", $('#modal_create_excel_file')[0].files[0]);
+
+            var url = APP_URL + "/food/excel";
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: (fd),
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                     console.log(response);
+                    if(response.status == 0){
+                        $('#Modal_createExcel_fail').modal('show');
+                        $('#Modal_createExcel_fail .modal-body ').html(response.message);
+                    }else{
+                        $('#Modal_create_excel').modal('hide');
+                        $('#modal_create_excel_file').val('');
+                        $('.custom-file-label').html('');
                         $('#Modal_success').modal('show');
                     }
                 },

@@ -428,7 +428,6 @@
                                         reader.onload = function(e) {
                                             $('#modal_create_previewImage').attr('src', e.target.result);
                                         }
-
                                         reader.readAsDataURL(input.files[0]); // convert to base64 string
                                     }
                                 }
@@ -450,9 +449,77 @@
         </div>
     </div>
 </div>
+{{--匯入excel食物資料--}}
+<div class="modal fade" id="Modal_create_excel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" i>匯入食物資料EXCEL</h5>
+                <a href="http://localhost/qrfood/public/storage/example.xlsx">EXCEL格式</a>
+            </div>
+            <div class="modal-body">
+                <form id="form_create_excel" class="was-validated" action="" enctype="multipart/form-data">
+                <div class="form-group col-md-6">
 
+                    <div class="custom-file">
+                        <input type="file" class ="custom-file-input" id="modal_create_excel_file" name="excel" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required/>
+                        <div class="invalid-feedback">可接受的副檔名有.xlsx</div>
+                        <label class="custom-file-label" for="customFile">選擇excel</label>
+                    </div>
+
+                    <script>
+                        $("#modal_create_excel_file").on('change',function() {
+
+                            if(checkfile() == true){ //判斷檔名是否是圖檔
+                                // readURL(this);
+                                var fileName = $(this).val().split("\\").pop();
+                                $(this).siblings(".custom-file-label").addClass("selected").html(fileName); //input的文字變成上傳的檔名
+                            }else{ //
+                                $('#modal_create_excel_file').val(''); //清空input
+                                $(this).siblings(".custom-file-label").addClass("selected").html(''); //input的文字變成空白
+                                $(this).next().html('可接受的副檔名有.xlsx'); //錯誤提醒
+
+                            }
+                        });
+                        function checkfile() {
+                            var validExts = new Array(".xlsx");
+                            var fileExt = $('#modal_create_excel_file').val();
+                            fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+                            if (validExts.indexOf(fileExt) < 0) {
+                                return false;
+                            }else{
+                                return true;
+                            }
+                        }
+                    </script>
+                </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btn_createExcel_submit" class="btn btn-primary">新增</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bd-example-modal-sm" id="Modal_createExcel_fail" tabindex="-1" role="dialog"
+     aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">訊息</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+
+        </div>
+    </div>
+</div>
 {{--說明文件:如何更改狀態--}}
-
 <!-- Modal -->
 <div class="modal fade" id="Modal_statusExplanation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

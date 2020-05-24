@@ -34,6 +34,7 @@ Route::middleware(['auth'])->group(function() {
     //exercise
     Route::get('/food','Admin\FoodController@showAll'); //顯示所有食物
     Route::post('/food','Admin\FoodController@create');
+    Route::post('/food/excel','Admin\FoodController@createExcel');
     Route::get('/food/{rsName}','Admin\FoodController@showPatch');
 
     Route::put('/food/{fdId}', 'Admin\FoodController@update');
