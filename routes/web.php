@@ -27,7 +27,16 @@ Route::middleware(['auth'])->group(function() {
         $category = \App\category::all();
         return view('admin/food/main', ['location' => $location,'restaurant' => $restaurant,'category' => $category]);
     })->name('manage_food');
-    
+
+    Route::get('/manage_food/restaurant', function () {
+        $location = \App\restaurant::select('location')->groupBy('location')->get();
+        return view('admin/restaurant/main',['location' => $location]);
+    })->name('manage_food/restaurant');
+
+    Route::get('/manage_food/category', function () {
+        return view('admin/category/main');
+    })->name('manage_food/category');
+
     Route::POST('/logout', 'Auth\LoginController@logout')->name('logout');
 
     //API
@@ -37,6 +46,7 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/food/excel','Admin\FoodController@createExcel');
     Route::get('/food/{rsName}','Admin\FoodController@showPatch');
 
+    Route::post('/food/{fdId}/photo', 'Admin\FoodController@editPhoto');
     Route::put('/food/{fdId}', 'Admin\FoodController@update');
     Route::patch('food/{fdId}', 'Admin\FoodController@updatee');
     Route::delete('/food/{fdId}', 'Admin\FoodController@delete');
@@ -44,9 +54,16 @@ Route::middleware(['auth'])->group(function() {
     Route::put('food/{fdId}/restore', 'Admin\FoodController@restore');
 
     Route::get('/restaurant', 'Admin\RestaurantController@show');
+    Route::get('/restaurant/{location}', 'Admin\RestaurantController@showPatch');
+
+    Route::post('/restaurant', 'Admin\RestaurantController@create');
+
+    Route::put('/restaurant/{rsId}', 'Admin\RestaurantController@update');
+
     Route::get('/restaurant/groupByLocation', 'Admin\RestaurantController@groupByLocation');
 
     Route::get('/category', 'Admin\CategoryController@show');
-    Route::post('/food/{fdId}/photo', 'Admin\FoodController@editPhoto');
+    Route::post('/category','Admin\categoryController@create');
+    Route::put('/category/{cId}', 'Admin\CategoryController@update');
 
 });

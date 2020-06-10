@@ -395,7 +395,7 @@ class FoodController extends Controller
     }
 
     /**
-     * 把該筆資料軟刪除d
+     * 把該筆資料軟刪除
      * @param Request $request
      * @param $fdId
      * @return \Illuminate\Http\JsonResponse

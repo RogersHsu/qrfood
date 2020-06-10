@@ -343,7 +343,7 @@ function submitFoodImage(table, row) {
                     row.data(row.data()).draw();
                     $('#Modal_image').modal('hide');
                     $('#Modal_success').modal('show');
-
+                    console.log(response);
                 }
             });
         }

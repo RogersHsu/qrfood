@@ -399,12 +399,12 @@
 
                             <script>
                                 $("#modal_create_image").on('change',function() {
-
                                     if(checkfile() == true){ //判斷檔名是否是圖檔
                                         readURL(this);
                                         var fileName = $(this).val().split("\\").pop();
                                         $(this).siblings(".custom-file-label").addClass("selected").html(fileName); //input的文字變成上傳的檔名
                                     }else{ //
+
                                         $('#modal_create_image').val(''); //清空input
                                         $(this).siblings(".custom-file-label").addClass("selected").html(''); //input的文字變成空白
                                         $(this).next().html('可接受的副檔名有.jpg .png'); //錯誤提醒
@@ -412,8 +412,10 @@
                                     }
                                 });
                                 function checkfile() {
+
                                     var validExts = new Array(".png", ".jpg",".jpeg");
                                     var fileExt = $('#modal_create_image').val();
+
                                     fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
                                     if (validExts.indexOf(fileExt) < 0) {
                                         return false;
