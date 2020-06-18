@@ -11,39 +11,47 @@ namespace App\Http\Controllers\Admin;
 use App\category;
 use App\food;
 use App\Http\Controllers\Controller;
-use App\restaurant;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 
-class RestaurantController extends Controller
+class UserController extends Controller
 {
-    private $response = array(
-        'code' => 0,
-        'message' => '',
-        'data' => array() ,
-    );
     public function create(Request $request){
 
         $input = $request->all();
 //        //檢查input是否合
         $validator = Validator::make($request->all(), [
-            'rsName' => 'required',
-            'location' => 'required',
+            'name' => 'required',
+            'account' => 'required',
+            'password' => 'required',
+            'role' => 'required|numeric',
+            'email' => 'required',
+            'gender' => 'required|numeric',
+            'height' => 'required|numeric',
+            'weight' => 'required|numeric',
+            'exercise' => 'required|numeric',
         ]);
 
         if ($validator->passes()) {
-            $restaurant = new Restaurant;
-            $restaurant->location = $input['location'];
-            $restaurant->rsName = $input['rsName'];
-            $restaurant->photo = "";
-            $restaurant->save();
+            $user = new User;
+            $user->name = $input['name'];
+            $user->account = $input['account'];
+            $user->password = $input['password'];
+            $user->email = $input['email'];
+            $user->role = $input['role'];
+            $user->gender = $input['gender'];
+            $user->height = $input['height'];
+            $user->weight = $input['weight'];
+            $user->exercise = $input['exercise'];
+            $user->save();
 
 
             return response()->json([
                 'status' => '1',
                 'message' => 'create success',
-                'data' => $restaurant,
+                'data' => $user,
             ], 200);
         }else{
             return response()->json([
@@ -55,49 +63,32 @@ class RestaurantController extends Controller
             ], 200);
         }
     }
-    /** 抓出所有餐廳的資料
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function show()
     {
-        $response = restaurant::all();
+        $response = User::all();
         return response()->json($response, 200);
     }
-    public function groupByLocation()
-    {
-
-        $location = restaurant::select('location')->groupBy('location')->get();
-
-        foreach ($location as $i) {
-            $object = new \stdClass();
-            $object->location = $i['location'];
-
-            $restaurant = restaurant::select('rsId','rsName')->where('location',$i['location'])->get();
-            $object->restaurant = $restaurant;
-            array_push($this->response['data'],$object);
-
-        }
-
-        $this->response['code'] = 1;
-        $this->response['message'] = "success";
-
-        return json_encode($this->response);
-    }
     /**
-     * 更新該筆餐廳的數據
+     * 更新該筆使用者的數據
      * @param Request $request 前端傳來該筆資料的更新數據
      * @return string
      */
-    public function update(Request $request, $rsId)
+    public function update(Request $request, $uId)
     {
         $postJsonData = $request->getContent();
         //做資料驗證
         $ValidData = json_decode($postJsonData, true);
-
         $rules = [
-            'rsId' => 'required|numeric',
-            'location' => 'required',
-            'rsName' => 'required',
+            'uId' => 'required|numeric',
+            'name' => 'required',
+            'account' => 'required',
+            'role' => 'required|numeric',
+            'email' => 'required',
+            'gender' => 'required|numeric',
+            'height' => 'required|numeric',
+            'weight' => 'required|numeric',
+            'exercise' => 'required|numeric',
+
         ];
         $messages = array(
             'required' => '欄位不能為空',
@@ -120,22 +111,24 @@ class RestaurantController extends Controller
             //資料庫更新該筆資料
             $updateData = json_decode($postJsonData);
 
-            $restaurant = restaurant::where('rsId', $rsId)->first();
-
-            $restaurant->rsId = $updateData->rsId;
-            $restaurant->location = $updateData->location;
-            $restaurant->rsName = $updateData->rsName;
+            $user = User::where('uId', $uId)->first();
+            $user->name = $updateData->name;
+            $user->account = $updateData->account;
+            $user->role = $updateData->role;
+            $user->gender = $updateData->gender;
+            $user->email = $updateData->email;
+            $user->height = $updateData->height;
+            $user->weight = $updateData->weight;
+            $user->exercise = $updateData->exercise;
 
 
             try{
-                $response = $restaurant->save();
+                $response = $user->save();
             }catch (Exception $e){
                 $data['status'] = 0;
                 $data['message'] = "名稱不能大於十個字";
                 return json_encode($data);
             }
-
-
             $data['data'] = $response;
             return json_encode($data);
         } else {
@@ -144,9 +137,16 @@ class RestaurantController extends Controller
             return json_encode($data);
         }
     }
-    public function showPatch($location)
+    public function delete(Request $request, $uId)
     {
-        $restaurant = restaurant::where('location',$location)->get();
-        return $restaurant;
+        $user = User::find($uId);
+        $user->delete();
+        return response()->json([
+            'status' => '1',
+            'message' => 'delete success',
+            'data' => [
+
+            ]
+        ], 200);
     }
 }
