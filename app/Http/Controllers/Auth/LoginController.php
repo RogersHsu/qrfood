@@ -47,7 +47,7 @@ class LoginController extends Controller
     {
         // dd($request);
         return $this->guard()->attempt(
-            ['account' => $request->account, 'password' => $request->password, 'role' => 1], $request->filled('remember')
+            ['account' => $request->account, 'password' => $request->password, 'role' => 2], $request->filled('remember')
         );
     }
 

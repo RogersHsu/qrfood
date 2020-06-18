@@ -38,7 +38,7 @@ class UserController extends Controller
             $user = new User;
             $user->name = $input['name'];
             $user->account = $input['account'];
-            $user->password = $input['password'];
+            $user->password = bcrypt($input['password']);
             $user->email = $input['email'];
             $user->role = $input['role'];
             $user->gender = $input['gender'];
