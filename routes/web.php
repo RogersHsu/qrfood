@@ -37,6 +37,10 @@ Route::middleware(['auth'])->group(function() {
         return view('admin/category/main');
     })->name('manage_food/category');
 
+    Route::get('/manage_food/user', function () {
+        return view('admin/user/main');
+    })->name('manage_food/user');
+
     Route::POST('/logout', 'Auth\LoginController@logout')->name('logout');
 
     //API
@@ -63,7 +67,12 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/restaurant/groupByLocation', 'Admin\RestaurantController@groupByLocation');
 
     Route::get('/category', 'Admin\CategoryController@show');
-    Route::post('/category','Admin\categoryController@create');
+    Route::post('/category','Admin\CategoryController@create');
     Route::put('/category/{cId}', 'Admin\CategoryController@update');
+
+    Route::get('/user', 'Admin\UserController@show');
+    Route::post('/user','Admin\UserController@create');
+    Route::put('/user/{uId}', 'Admin\UserController@update');
+    Route::delete('/user/{uId}', 'Admin\UserController@delete');
 
 });
