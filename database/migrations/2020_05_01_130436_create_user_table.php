@@ -25,6 +25,7 @@ class CreateUserTable extends Migration {
 			$table->float('height', 10, 0)->comment('身高');
 			$table->float('weight', 10, 0)->comment('體重');
 			$table->integer('exercise')->default(0)->comment('運動量');
+			$table->rememberToken();
 			$table->timestamp('created_at')->useCurrent();
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
 		});

@@ -10,8 +10,6 @@ class User extends Authenticatable
     use Notifiable;
     protected $table = 'user';
     protected $primaryKey = 'uId';
-    protected $rememberTokenName = false;
-    protected $rememberTokenExpireMinutes = 10;
 
     /**
      * The attributes that are mass assignable.
@@ -28,6 +26,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password',
+        'password', 'remember_token',
     ];
 }
