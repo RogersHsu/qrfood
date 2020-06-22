@@ -8,7 +8,7 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
 
-                <span class="dropdown-item content_insertSingle_item" style="text-align: center;">單筆新增</span>
+                <span id = "content_insertSingle_item" class="dropdown-item content_insertSingle_item" style="text-align: center;">單筆新增</span>
                 <script>
                     $(".content_insertSingle_item").on("click",function(){
 

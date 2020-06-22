@@ -43,8 +43,10 @@ function renderDataTable() {
 }
 function openCreateView() {
     //輸入內容淨空
-    $(document).on('click', '#btn_nav_create', function () {
-        $('#form_create input').val('');
+    $(document).on('click', '#content_insertSingle_item', function () {
+        $('#modalCreate_cName').val('');
+        $("#btn_create_submit").attr("disabled", false);
+        console.log("open");
     });
 }
 
@@ -88,7 +90,7 @@ function submitDataChange(view_row) {
                 data: JSON.stringify(JsonData),
                 contentType: "application/json;charset=utf-8",
                 success: function (response) {
-                    console.log(response);
+                    console.log("aa");
                     var response = JSON.parse(response);
                     if (response.status == 1) {
 
@@ -109,6 +111,7 @@ function createCategoryData(table){
     $(document).on("click", '#btn_create_submit', function () {
         var JsonData = {};
         JsonData['cName'] = $('#modalCreate_cName').val();
+        $("#btn_create_submit").attr("disabled", true);
 
         $.ajax({
             url: APP_URL + '/category',
@@ -117,7 +120,6 @@ function createCategoryData(table){
             data: JSON.stringify(JsonData),
             contentType: "application/json;charset=utf-8",
             success: function (response) {
-                console.log(response);
                 // var response = JSON.parse(response);
                 if (response.status == 1) {
                     table.row.add(response.data).draw();

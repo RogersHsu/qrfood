@@ -51,7 +51,7 @@
                         <div class="form-group col-md-12">
                             <label>食物類別名稱</label>
                             <input type="text" class="form-control" placeholder="食物類別名稱" id="modalCreate_cName"
-                                   required>
+                                   required maxlength="5">
                             <div class="invalid-feedback">此欄位必須填寫</div>
                         </div>
 
