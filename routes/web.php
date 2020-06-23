@@ -58,13 +58,15 @@ Route::middleware(['auth'])->group(function() {
     Route::put('food/{fdId}/restore', 'Admin\FoodController@restore');
 
     Route::get('/restaurant', 'Admin\RestaurantController@show');
+
+    Route::get('/restaurant/groupByLocation', 'Admin\RestaurantController@groupByLocation');
+
     Route::get('/restaurant/{location}', 'Admin\RestaurantController@showPatch');
 
     Route::post('/restaurant', 'Admin\RestaurantController@create');
 
     Route::put('/restaurant/{rsId}', 'Admin\RestaurantController@update');
 
-    Route::get('/restaurant/groupByLocation', 'Admin\RestaurantController@groupByLocation');
 
     Route::get('/category', 'Admin\CategoryController@show');
     Route::post('/category','Admin\CategoryController@create');

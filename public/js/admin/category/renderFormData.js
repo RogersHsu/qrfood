@@ -46,7 +46,6 @@ function openCreateView() {
     $(document).on('click', '#content_insertSingle_item', function () {
         $('#modalCreate_cName').val('');
         $("#btn_create_submit").attr("disabled", false);
-        console.log("open");
     });
 }
 
@@ -58,7 +57,6 @@ function openEditCategoryDataView(table) {
         view_row_data = view_row.data();
         $(document).off("click", '#btn_view_submit'); //移除"修改"的監聽
         $('#modalView_cName').val(view_row_data['cName']);
-
         submitDataChange(view_row);//重送修改後的資料至後端
 
     });
@@ -111,26 +109,31 @@ function createCategoryData(table){
     $(document).on("click", '#btn_create_submit', function () {
         var JsonData = {};
         JsonData['cName'] = $('#modalCreate_cName').val();
-        $("#btn_create_submit").attr("disabled", true);
+        var form = document.getElementById('form_create');
+        if (form.checkValidity() === false) {
 
-        $.ajax({
-            url: APP_URL + '/category',
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            type: 'POST',
-            data: JSON.stringify(JsonData),
-            contentType: "application/json;charset=utf-8",
-            success: function (response) {
-                // var response = JSON.parse(response);
-                if (response.status == 1) {
-                    table.row.add(response.data).draw();
+        }else{
+            $("#btn_create_submit").attr("disabled", true);
 
-                    $('#Modal_create').modal('hide');
-                    $('#Modal_success').modal('show');
+            $.ajax({
+                url: APP_URL + '/category',
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                type: 'POST',
+                data: JSON.stringify(JsonData),
+                contentType: "application/json;charset=utf-8",
+                success: function (response) {
+                    // var response = JSON.parse(response);
+                    if (response.status == 1) {
+                        table.row.add(response.data).draw();
+                        $('#Modal_create').modal('hide');
+                        $('#Modal_success').modal('show');
+                    }
                 }
-            }
 
 
-        });
+            });
+        }
+
 
     });
 }

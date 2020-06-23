@@ -1,7 +1,5 @@
 $(document).ready(function () {
-
     renderDataTable();
-
 });
 
 function renderDataTable() {
@@ -66,11 +64,23 @@ function renderDataTable() {
             // changeFoodStatus(table);
             openEditUserDataView(table);
             // openEditImageView();
+            openCreateView();
             createUserData(table);
             delUser(table);
             // createRestaurantData(table);
         },
     });
+}
+function openCreateView(){
+    $(document).on('click', '.content_insertSingle_item', function () {
+        $('#modal_create_name').val('');
+        $('#modal_create_account').val('');
+        $('#modal_create_password').val('');
+        $('#modal_create_email').val('');
+        $('#modal_create_height').val('');
+        $('#modal_create_weight').val('');
+        $("#btn_create_submit").attr("disabled", false);
+    });2
 }
 function delUser(table){
     $('#table tbody').on('click', '.column_del', function (event) {
@@ -116,6 +126,7 @@ function createUserData(table){
         if (form[0].checkValidity() == false) {
             console.log("false");
         }else{
+            $("#btn_create_submit").attr("disabled", true);
             $.ajax({
                 url: APP_URL + '/user',
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -124,7 +135,6 @@ function createUserData(table){
                 contentType: "application/json;charset=utf-8",
                 success: function (response) {
                     console.log(response);
-                    // var response = JSON.parse(response);
                     if (response.status == 1) {
                         table.row.add(response.data).draw();
                         $('#modal_create').modal('hide');

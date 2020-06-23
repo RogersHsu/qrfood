@@ -399,6 +399,7 @@
 
                             <script>
                                 $("#modal_create_image").on('change',function() {
+                                    console.log("Aa");
                                     if(checkfile() == true){ //判斷檔名是否是圖檔
                                         readURL(this);
                                         var fileName = $(this).val().split("\\").pop();
@@ -406,33 +407,37 @@
                                     }else{ //
 
                                         $('#modal_create_image').val(''); //清空input
+                                        $('#modal_create_previewImage').attr('src','');
                                         $(this).siblings(".custom-file-label").addClass("selected").html(''); //input的文字變成空白
                                         $(this).next().html('可接受的副檔名有.jpg .png'); //錯誤提醒
 
                                     }
-                                });
-                                function checkfile() {
+                                    function checkfile() {
+                                        console.log("checkfile");
+                                        var validExts = new Array(".png", ".jpg",".jpeg");
+                                        var fileExt = $('#modal_create_image').val();
 
-                                    var validExts = new Array(".png", ".jpg",".jpeg");
-                                    var fileExt = $('#modal_create_image').val();
+                                        fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+                                        if (validExts.indexOf(fileExt) < 0) {
 
-                                    fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
-                                    if (validExts.indexOf(fileExt) < 0) {
-                                        return false;
-                                    }else{
-                                        return true;
-                                    }
-                                }
-                                function readURL(input){
-                                    if (input.files && input.files[0]) {
-                                        var reader = new FileReader();
-
-                                        reader.onload = function(e) {
-                                            $('#modal_create_previewImage').attr('src', e.target.result);
+                                            return false;
+                                        }else{
+                                            return true;
                                         }
-                                        reader.readAsDataURL(input.files[0]); // convert to base64 string
                                     }
-                                }
+
+                                    function readURL(input){
+                                        if (input.files && input.files[0]) {
+                                            var reader = new FileReader();
+
+                                            reader.onload = function(e) {
+                                                $('#modal_create_previewImage').attr('src', e.target.result);
+                                            }
+                                            reader.readAsDataURL(input.files[0]); // convert to base64 string
+                                        }
+                                    }
+                                });
+
                             </script>
                         </div>
                     </div>

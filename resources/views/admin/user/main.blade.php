@@ -24,8 +24,6 @@
     {{--    渲染food表格資料--}}
     <script src="{{asset('js/admin/user/renderFormData.js')}}"></script>
 
-
-
     <script type="text/javascript">
         var APP_URL ={!! json_encode(url('/')) !!};
 

@@ -65,9 +65,7 @@ class RestaurantController extends Controller
     }
     public function groupByLocation()
     {
-
         $location = restaurant::select('location')->groupBy('location')->get();
-
         foreach ($location as $i) {
             $object = new \stdClass();
             $object->location = $i['location'];
