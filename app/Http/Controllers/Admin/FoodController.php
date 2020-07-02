@@ -140,10 +140,12 @@ class FoodController extends Controller
                 "carbohydrate" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(11,$row)->getValue(),
                 "sugar" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(12,$row)->getValue(),
                 "dietaryFiber" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(13,$row)->getValue(),
-                "sodium" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(14,$row)->getValue(),
-                "calcium" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(15,$row)->getValue(),
-                "potassium" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(16,$row)->getValue(),
+
+                "calcium" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(14,$row)->getValue(),
+                "potassium" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(15,$row)->getValue(),
+                "sodium" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(16,$row)->getValue(),
                 "ferrum" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(17,$row)->getValue(),
+                
                 "disable" => 0,
                 "photo" => $imageName,
             ];

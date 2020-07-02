@@ -462,7 +462,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" i>匯入食物資料EXCEL</h5>
-                <a href="http://qrfood.tw/admin/public/storage/example.xlsx">EXCEL格式</a>
+                <a href="http://qrfood.tw/admin/public/storage/example多筆匯入.xlsx">EXCEL格式</a>
             </div>
             <div class="modal-body">
                 <form id="form_create_excel" class="was-validated" action="" enctype="multipart/form-data">
