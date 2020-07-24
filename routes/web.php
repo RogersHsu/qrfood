@@ -19,6 +19,10 @@ Route::POST('/login', 'Auth\LoginController@login');
 
 
 Route::middleware(['auth'])->group(function() {
+    
+});
+
+Route::middleware(['admin', 'auth'])->group(function() {
 
     //顯示管理者畫面
     Route::get('/manage_food', function () {
