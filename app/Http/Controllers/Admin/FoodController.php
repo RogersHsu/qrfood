@@ -274,7 +274,6 @@ class FoodController extends Controller
     public function showAll()
     {
         $array = [];
-
         $result = food::with(['restaurant', 'category'])->get();
         foreach ($result as $food) {
             $arr = [];
