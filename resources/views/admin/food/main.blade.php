@@ -23,14 +23,9 @@
 @section('JS')
 {{--    渲染food表格資料--}}
     <script src="{{asset('js/admin/food/renderFormData.js')}}"></script>
+    <script src="{{asset('js/admin/food/renderRestaurantList.js')}}"></script>
 
 
 
-    <script type="text/javascript">
-        var APP_URL ={!! json_encode(url('/')) !!};
-
-        var action = "{{ env("APP_URL") }}"
-
-    </script>
 
 @endsection

@@ -30,7 +30,6 @@
         var APP_URL ={!! json_encode(url('/')) !!};
 
         var action = "{{ env("APP_URL") }}"
-
     </script>
 
 @endsection

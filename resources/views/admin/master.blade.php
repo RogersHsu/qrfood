@@ -54,6 +54,14 @@
 </div>
 @yield('JS')
 
+{{--global URL--}}
+<script type="text/javascript">
+            {{--        var APP_URL ={!! json_encode(url('/')) !!};--}}
+    var APP_URL = '<?php echo url('/') ?>';
+    var APP_API_URL = '<?php echo url('/api') ?>';
+
+</script>
+
 @yield('modal')
 </body>
 </html>

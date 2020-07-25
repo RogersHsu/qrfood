@@ -3,7 +3,7 @@ $(document).ready(function () {
 });
 
 function renderDataTable() {
-    var url = APP_URL + "/user";
+    var url = APP_API_URL + "/user";
     $.ajax({
         'type': "GET",
         'dataType': 'JSON',
@@ -93,7 +93,7 @@ function delUser(table){
         $(document).on("click", '#btn_del_submit', function () {
             console.log("aa");
             $.ajax({
-                url: APP_URL + '/user/' + uId,
+                url: APP_API_URL + '/user/' + uId,
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 type: 'DELETE',
                 contentType: "application/json;charset=utf-8",
@@ -128,7 +128,7 @@ function createUserData(table){
         }else{
             $("#btn_create_submit").attr("disabled", true);
             $.ajax({
-                url: APP_URL + '/user',
+                url: APP_API_URL + '/user',
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 type: 'POST',
                 data: JSON.stringify(JsonData),
@@ -226,7 +226,7 @@ function submitDataChange(view_row) {
 
 
             $.ajax({
-                url: APP_URL + '/user/' + uId,
+                url: APP_API_URL + '/user/' + uId,
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 type: 'PUT',
                 data: JSON.stringify(JsonData),

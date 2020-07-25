@@ -4,158 +4,19 @@
  */
 
 $(document).ready(function () {
+
     renderDataTable();
-    //查看指定餐廳
-    $('#btn_search').on('click', function () {
-        var rsName = $('#navbar_selectRestaurant a').text();
-        if ($('#navbar_selectRestaurant a').hasClass("able") == true) {
-            drawDataTable(rsName);
-        }
-    });
-    $('#form_create_excel').submit(function(event){
-        event.preventDefault();
-    });
+
+
     addExcel();
-    create();
 });
 
-function drawDataTable(rsName) {
-    if (rsName === '不限餐廳') {
-        var url = APP_URL + "/food/";
-        $.ajax({
-            'type': "GET",
-            'dataType': 'JSON',
-            'url': url,
-            'success': function (response) {
-                var datatable = $('#table').DataTable();
-                datatable.clear().draw();
-                datatable.rows.add(response); // Add new data
-                datatable.draw(); // Redraw the DataTable
 
-            }
-        });
-    } else {
-        var url = APP_URL + "/food/" + rsName;
-        $.ajax({
-            'type': "GET",
-            'dataType': 'JSON',
-            'url': url,
-            'success': function (response) {
-                var datatable = $('#table').DataTable();
-                datatable.clear().draw();
-                datatable.rows.add(response); // Add new data
-                datatable.draw(); // Redraw the DataTable
-
-            }
-        });
-    }
-}
-
-function create() {
-    $('#form_create').submit(function (event) {
-        event.preventDefault();
-    });
-    $(document).on('click', '#btn_create_submit', function () {
-        console.log("click");
-        var form = $('#form_create');
-        if (form[0].checkValidity() === false) {
-
-        } else {
-            var fd = new FormData();
-            fd.append("rsId", $('#modal_create_rsId').val());
-            fd.append("fdName", $('#modal_create_fdName').val());
-            fd.append("cId", $('#modal_create_cId').val());
-            fd.append("gram", $('#modal_create_gram').val());
-            fd.append("protein", $('#modal_create_protein').val());
-            fd.append("calorie", $('#modal_create_calorie').val());
-            fd.append("fat", $('#modal_create_fat').val());
-            fd.append("saturatedFat", $('#modal_create_saturatedFat').val());
-            fd.append("transFat", $('#modal_create_transFat').val());
-            fd.append("cholesterol", $('#modal_create_cholesterol').val());
-            fd.append("carbohydrate", $('#modal_create_carbohydrate').val());
-            fd.append("sugar", $('#modal_create_sugar').val());
-            fd.append("dietaryFiber", $('#modal_create_dietaryFiber').val());
-            fd.append("sodium", $('#modal_create_sodium').val());
-            fd.append("calcium", $('#modal_create_calcium').val());
-            fd.append("potassium", $('#modal_create_potassium').val());
-            fd.append("ferrum", $('#modal_create_ferrum').val());
-            var image = $('#modal_create_image')[0].files[0];
-            fd.append("photo", image);
-
-            var url = APP_URL + "/food";
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: (fd),
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    console.log(response);
-                    if (response.status === '1') {
-                        $data = response.data;
-                        $data['rsName'] = $('#modal_create_rsId option:selected').text();
-                        $data['cName'] = $('#modal_create_cId option:selected').text();
-                        var $arr = [];
-                        $arr.push($data);
-                        var datatable = $('#table').DataTable();
-                        datatable.rows.add($arr); // Add new data
-                        datatable.draw(); // Redraw the DataTable
-                        $('#Modal_create').modal('hide');
-                        $('#Modal_success').modal('show');
-                    }else{
-                        $('#Modal_FailedMessage').modal('show');
-                        var message = "";
-                        for (var key in response.data[0]) {
-                            message += response.data[0][key] + "\n";
-                        }
-                        $('#Modal_FailedMessage .modal-body').html(message);
-                    }
-                },
-            });
-        }
-
-    });
-}
-
-function addExcel() {
-
-    $(document).on('click', '#btn_createExcel_submit', function () {
-        var form = $('#form_create_excel');
-        if (form[0].checkValidity() === false) {
-
-        } else {
-            var fd = new FormData();
-            fd.append("excel", $('#modal_create_excel_file')[0].files[0]);
-
-            var url = APP_URL + "/food/excel";
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: (fd),
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                     console.log(response);
-                    if(response.status == 0){
-                        $('#Modal_createExcel_fail').modal('show');
-                        $('#Modal_createExcel_fail .modal-body ').html(response.message);
-                    }else{
-                        $('#Modal_create_excel').modal('hide');
-                        $('#modal_create_excel_file').val('');
-                        $('.custom-file-label').html('');
-                        $('#Modal_success').modal('show');
-                    }
-                },
-            });
-        }
-
-    });
-}
-
+/**
+ * 渲染Datatable
+ */
 function renderDataTable() {
-    var url = APP_URL + "/food";
+    var url = APP_API_URL + "/food";
     $.ajax({
         'type': "GET",
         'dataType': 'JSON',
@@ -168,7 +29,6 @@ function renderDataTable() {
                     header: true,
                     // footer: true
                 },
-
                 data: response,
                 columns: [
                     {
@@ -208,15 +68,178 @@ function renderDataTable() {
             });
             table.fixedHeader.headerOffset(-6);
 
-            changeFoodStatus(table);
-            openEditFoodDataView(table);
+            createSingleFood();
+            changeFoodStatus();
+            openEditFoodDataView();
             openEditImageView();
-            openCreateView();
+            cleanCreateViewData();
         },
     });
 }
+/**
+ * 建立單筆食物
+ */
+function createSingleFood() {
+    $('#form_create').submit(function (event) {
+        event.preventDefault();
+    });
+    $(document).on('click', '#btn_create_submit', function () {
+        console.log("click");
+        var form = $('#form_create');
+        if (form[0].checkValidity() === false) {
 
-function openCreateView() {
+        } else {
+            var fd = new FormData();
+            fd.append("rsId", $('#modal_create_rsId').val());
+            fd.append("fdName", $('#modal_create_fdName').val());
+            fd.append("cId", $('#modal_create_cId').val());
+            fd.append("gram", $('#modal_create_gram').val());
+            fd.append("protein", $('#modal_create_protein').val());
+            fd.append("calorie", $('#modal_create_calorie').val());
+            fd.append("fat", $('#modal_create_fat').val());
+            fd.append("saturatedFat", $('#modal_create_saturatedFat').val());
+            fd.append("transFat", $('#modal_create_transFat').val());
+            fd.append("cholesterol", $('#modal_create_cholesterol').val());
+            fd.append("carbohydrate", $('#modal_create_carbohydrate').val());
+            fd.append("sugar", $('#modal_create_sugar').val());
+            fd.append("dietaryFiber", $('#modal_create_dietaryFiber').val());
+            fd.append("sodium", $('#modal_create_sodium').val());
+            fd.append("calcium", $('#modal_create_calcium').val());
+            fd.append("potassium", $('#modal_create_potassium').val());
+            fd.append("ferrum", $('#modal_create_ferrum').val());
+            var image = $('#modal_create_image')[0].files[0];
+            fd.append("photo", image);
+
+            var url = APP_API_URL + "/food";
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: (fd),
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    console.log(response);
+                    if (response.status === '1') {
+                        $data = response.data;
+                        $data['rsName'] = $('#modal_create_rsId option:selected').text();
+                        $data['cName'] = $('#modal_create_cId option:selected').text();
+                        var $arr = [];
+                        $arr.push($data);
+                        var datatable = $('#table').DataTable();
+                        datatable.rows.add($arr); // Add new data
+                        datatable.draw(); // Redraw the DataTable
+                        $('#Modal_create').modal('hide');
+                        $('#Modal_success').modal('show');
+                        //clear input value
+                        $('#form_create input[type=text]').val('');
+
+                    }else{
+                        $('#Modal_FailedMessage').modal('show');
+                        var message = "";
+                        for (var key in response.data[0]) {
+                            message += response.data[0][key] + "\n";
+                        }
+                        $('#Modal_FailedMessage .modal-body').html(message);
+                    }
+                },
+            });
+        }
+
+    });
+}
+
+/**
+ * 將Excel匯入資料庫
+ */
+function addExcel() {
+    $('#form_create_excel').submit(function(event){
+        event.preventDefault();
+    });
+    $(document).on('click', '#btn_createExcel_submit', function () {
+        var form = $('#form_create_excel');
+        if (form[0].checkValidity() === false) {
+
+        } else {
+            var fd = new FormData();
+            fd.append("excel", $('#modal_create_excel_file')[0].files[0]);
+
+            var url = APP_API_URL + "/food/excel";
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: (fd),
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                     console.log(response);
+                    if(response.status == 0){
+                        $('#Modal_createExcel_fail').modal('show');
+                        $('#Modal_createExcel_fail .modal-body ').html(response.message);
+                    }else{
+                        $('#Modal_create_excel').modal('hide');
+                        $('#modal_create_excel_file').val('');
+                        $('.custom-file-label').html('');
+                        $('#Modal_success').modal('show');
+                    }
+                },
+            });
+        }
+
+    });
+}
+
+
+/**
+ * 用於更改表單上食物的"狀態"
+ * @param table 表格
+ */
+function changeFoodStatus() {
+    var table = $('#table').DataTable();
+    $('#table tbody').on('dblclick', '.column_status', function () {
+
+        var row = table.row($(this).parent().parent());
+        var rowData = row.data();
+        var fdId = rowData['fdId'];
+        //建立傳送後端資料
+        var dataJSON = {};
+        dataJSON['disable'] = rowData['disable'];
+        //判斷該筆資料目前是隱藏還是顯示中的狀態,以進行更換狀態
+        if (rowData['disable'] === 0) {
+            $.ajax({
+                url: APP_API_URL + '/food/' + fdId,
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                type: 'DELETE',
+                data: JSON.stringify(dataJSON),
+                contentType: "application/json;charset=utf-8",
+                success: function (response) {
+                    rowData['disable'] = 1;
+                    row.data(rowData).draw(); //重新繪製rowData的資料
+                    change_ModalStatus_style();
+                }
+            });
+        } else {
+            $.ajax({
+                url: APP_API_URL + '/food/' + fdId + '/restore',
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                type: 'PUT',
+                data: JSON.stringify(dataJSON),
+                contentType: "application/json;charset=utf-8",
+                success: function (response) {
+                    rowData['disable'] = 0;
+                    row.data(rowData).draw(); //重新繪製rowData的資料
+                    change_ModalStatus_style();
+                }
+            });
+        }
+    });
+}
+
+/**
+ * 打開「單筆新增」 清除上一筆新增的欄位資料
+ */
+function cleanCreateViewData() {
     //輸入內容淨空
     $(document).on('click', '#btn_nav_create', function () {
         $('#form_create input').val('');
@@ -225,15 +248,16 @@ function openCreateView() {
 
 /**
  * 打開 食物資料的彈跳視窗
- * @param table
  */
-function openEditFoodDataView(table) {
+function openEditFoodDataView() {
     var view_row; //被查看的那行
     var view_row_data;
+    var table = $('#table').DataTable();
     $('#table tbody').on('click', '.column_view', function (event) {
 
         $(document).off("click", '#btn_view_submit'); //移除"修改"的監聽
 
+        console.log("open view");
         view_row = table.row($(this).parent().parent());
         view_row_data = view_row.data();
         renderRsNameDropdown(view_row_data['rsName'], view_row_data['rsId']);
@@ -261,7 +285,82 @@ function openEditFoodDataView(table) {
         // event.preventDefault();
     });
 }
+/**
+ * 更改該行食物資料
+ * @param view_row 該行食物資料
+ */
+function submitDataChange(view_row) {
 
+    $(document).on("click", '#btn_view_submit', function (e) {
+        var fdId = view_row.data()['fdId'];
+        var form = document.getElementById('form_view');
+
+        if (form.checkValidity() === false) {
+
+        } else {
+            var JsonData = {}; //要回傳後端的資料
+            JsonData['fdId'] = fdId;
+            JsonData['fdName'] = $('#modal_view_fdName').val();
+            JsonData['rsId'] = $('#modal_view_dropdown_rsName').val();
+            JsonData['cId'] = $('#modal_view_dropdown_category').val();
+            JsonData['gram'] = $('#modal_view_gram').val();
+            JsonData['calorie'] = $('#modal_view_calorie').val();
+            JsonData['protein'] = $('#modal_view_protein').val();
+            JsonData['fat'] = $('#modal_view_fat').val();
+            JsonData['saturatedFat'] = $('#modal_view_saturatedFat').val();
+            JsonData['transFat'] = $('#modal_view_transFat').val();
+            JsonData['cholesterol'] = $('#modal_view_cholesterol').val();
+            JsonData['carbohydrate'] = $('#modal_view_carbohydrate').val();
+            JsonData['sugar'] = $('#modal_view_sugar').val();
+            JsonData['dietaryFiber'] = $('#modal_view_dietaryFiber').val();
+            JsonData['sodium'] = $('#modal_view_sodium').val();
+            JsonData['calcium'] = $('#modal_view_calcium').val();
+            JsonData['potassium'] = $('#modal_view_potassium').val();
+            JsonData['ferrum'] = $('#modal_view_ferrum').val();
+
+
+            $.ajax({
+                url: APP_API_URL + '/food/' + fdId,
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                type: 'PUT',
+                data: JSON.stringify(JsonData),
+                contentType: "application/json;charset=utf-8",
+                success: function (response) {
+                    var response = JSON.parse(response);
+                    if (response.status == 1) {
+                        view_row.data()['fdName'] = $('#modal_view_fdName').val();
+                        view_row.data()['rsName'] = $("#modal_view_dropdown_rsName option:selected").text();
+                        view_row.data()['rsId'] = $('#modal_view_dropdown_rsName').val();
+                        view_row.data()['cName'] = $("#modal_view_dropdown_category option:selected").text();
+                        view_row.data()['cId'] = $('#modal_view_dropdown_category').val();
+                        view_row.data()['gram'] = $('#modal_view_gram').val();
+                        view_row.data()['calorie'] = $('#modal_view_calorie').val();
+                        view_row.data()['protein'] = $('#modal_view_protein').val();
+                        view_row.data()['fat'] = $('#modal_view_fat').val();
+                        view_row.data()['saturatedFat'] = $('#modal_view_saturatedFat').val();
+                        view_row.data()['transFat'] = $('#modal_view_transFat').val();
+                        view_row.data()['cholesterol'] = $('#modal_view_cholesterol').val();
+                        view_row.data()['carbohydrate'] = $('#modal_view_carbohydrate').val();
+                        view_row.data()['sugar'] = $('#modal_view_sugar').val();
+                        view_row.data()['dietaryFiber'] = $('#modal_view_dietaryFiber').val();
+                        view_row.data()['sodium'] = $('#modal_view_sodium').val();
+                        view_row.data()['calcium'] = $('#modal_view_calcium').val();
+                        view_row.data()['potassium'] = $('#modal_view_potassium').val();
+                        view_row.data()['ferrum'] = $('#modal_view_ferrum').val();
+                        view_row.data(view_row.data()).draw();
+                        $('#Modal_view').modal('hide');
+                        $('#Modal_success').modal('show');
+                    }
+                }
+            });
+
+        }
+    })
+}
+
+/***
+ * 打開編輯圖片彈跳視窗
+ */
 function openEditImageView() {
     var defaultImageUrl; //原本的圖片
     $('#table tbody').on('click', '.column_image', function (event) {
@@ -342,7 +441,7 @@ function submitFoodImage(table, row) {
             var files = $('#file')[0].files[0];
             fd.append('file', files);
             $.ajax({
-                url: APP_URL + '/food/' + fdId + '/photo',
+                url: APP_API_URL + '/food/' + fdId + '/photo',
                 type: 'POST',
                 // headers: { 'Content-Type' : 'application/x-www-form-urlencoded'},
                 data: (fd),
@@ -363,80 +462,6 @@ function submitFoodImage(table, row) {
     });
 }
 
-/**
- * 更改食物資料
- * @param view_row
- */
-function submitDataChange(view_row) {
-    $(document).on("click", '#btn_view_submit', function () {
-        var fdId = view_row.data()['fdId'];
-        var form = document.getElementById('form_view');
-
-        if (form.checkValidity() === false) {
-            // event.preventDefault();
-            // event.stopPropagation();
-        } else {
-            var JsonData = {}; //要回傳後端的資料
-            JsonData['fdId'] = fdId;
-            JsonData['fdName'] = $('#modal_view_fdName').val();
-            JsonData['rsId'] = $('#modal_view_dropdown_rsName').val();
-            JsonData['cId'] = $('#modal_view_dropdown_category').val();
-            JsonData['gram'] = $('#modal_view_gram').val();
-            JsonData['calorie'] = $('#modal_view_calorie').val();
-            JsonData['protein'] = $('#modal_view_protein').val();
-            JsonData['fat'] = $('#modal_view_fat').val();
-            JsonData['saturatedFat'] = $('#modal_view_saturatedFat').val();
-            JsonData['transFat'] = $('#modal_view_transFat').val();
-            JsonData['cholesterol'] = $('#modal_view_cholesterol').val();
-            JsonData['carbohydrate'] = $('#modal_view_carbohydrate').val();
-            JsonData['sugar'] = $('#modal_view_sugar').val();
-            JsonData['dietaryFiber'] = $('#modal_view_dietaryFiber').val();
-            JsonData['sodium'] = $('#modal_view_sodium').val();
-            JsonData['calcium'] = $('#modal_view_calcium').val();
-            JsonData['potassium'] = $('#modal_view_potassium').val();
-            JsonData['ferrum'] = $('#modal_view_ferrum').val();
-
-
-            $.ajax({
-                url: APP_URL + '/food/' + fdId,
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                type: 'PUT',
-                data: JSON.stringify(JsonData),
-                contentType: "application/json;charset=utf-8",
-                success: function (response) {
-                    var response = JSON.parse(response);
-                    if (response.status == 1) {
-                        view_row.data()['fdName'] = $('#modal_view_fdName').val();
-                        view_row.data()['rsName'] = $("#modal_view_dropdown_rsName option:selected").text();
-                        view_row.data()['rsId'] = $('#modal_view_dropdown_rsName').val();
-                        view_row.data()['cName'] = $("#modal_view_dropdown_category option:selected").text();
-                        view_row.data()['cId'] = $('#modal_view_dropdown_category').val();
-                        view_row.data()['gram'] = $('#modal_view_gram').val();
-                        view_row.data()['calorie'] = $('#modal_view_calorie').val();
-                        view_row.data()['protein'] = $('#modal_view_protein').val();
-                        view_row.data()['fat'] = $('#modal_view_fat').val();
-                        view_row.data()['saturatedFat'] = $('#modal_view_saturatedFat').val();
-                        view_row.data()['transFat'] = $('#modal_view_transFat').val();
-                        view_row.data()['cholesterol'] = $('#modal_view_cholesterol').val();
-                        view_row.data()['carbohydrate'] = $('#modal_view_carbohydrate').val();
-                        view_row.data()['sugar'] = $('#modal_view_sugar').val();
-                        view_row.data()['dietaryFiber'] = $('#modal_view_dietaryFiber').val();
-                        view_row.data()['sodium'] = $('#modal_view_sodium').val();
-                        view_row.data()['calcium'] = $('#modal_view_calcium').val();
-                        view_row.data()['potassium'] = $('#modal_view_potassium').val();
-                        view_row.data()['ferrum'] = $('#modal_view_ferrum').val();
-                        view_row.data(view_row.data()).draw();
-                        $('#Modal_view').modal('hide');
-                        $('#Modal_success').modal('show');
-                    }
-                }
-
-
-            });
-
-        }
-    })
-}
 
 
 /**
@@ -452,7 +477,7 @@ function renderCategoryDropdown(default_cName, default_cId) {
     $('#modal_view_dropdown_category').append(str);
 
     $.ajax({
-        url: APP_URL + '/category',
+        url: APP_API_URL + '/category',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         type: 'GET',
         contentType: "application/json;charset=utf-8",
@@ -484,7 +509,7 @@ function renderRsNameDropdown(default_rsName, default_rsId) {
 
     $.ajax({
         // {{--<option value="1">One</option>--}}
-        url: APP_URL + '/restaurant',
+        url: APP_API_URL + '/restaurant',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         type: 'GET',
         contentType: "application/json;charset=utf-8",
@@ -501,49 +526,6 @@ function renderRsNameDropdown(default_rsName, default_rsId) {
     });
 }
 
-/**
- * 用於更改表單上食物的"狀態"
- * @param table 表格
- */
-function changeFoodStatus(table) {
-    $('#table tbody').on('dblclick', '.column_status', function () {
-
-        var row = table.row($(this).parent().parent());
-        var rowData = row.data();
-        var fdId = rowData['fdId'];
-        //建立傳送後端資料
-        var dataJSON = {};
-        dataJSON['disable'] = rowData['disable'];
-        //判斷該筆資料目前是隱藏還是顯示中的狀態,以進行更換狀態
-        if (rowData['disable'] === 0) {
-            $.ajax({
-                url: APP_URL + '/food/' + fdId,
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                type: 'DELETE',
-                data: JSON.stringify(dataJSON),
-                contentType: "application/json;charset=utf-8",
-                success: function (response) {
-                    rowData['disable'] = 1;
-                    row.data(rowData).draw(); //重新繪製rowData的資料
-                    change_ModalStatus_style();
-                }
-            });
-        } else {
-            $.ajax({
-                url: APP_URL + '/food/' + fdId + '/restore',
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                type: 'PUT',
-                data: JSON.stringify(dataJSON),
-                contentType: "application/json;charset=utf-8",
-                success: function (response) {
-                    rowData['disable'] = 0;
-                    row.data(rowData).draw(); //重新繪製rowData的資料
-                    change_ModalStatus_style();
-                }
-            });
-        }
-    });
-}
 
 /**
  * ajax成功後,更改ModalStatus按鈕的狀態

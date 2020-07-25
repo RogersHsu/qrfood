@@ -4,7 +4,6 @@ $(document).ready(function () {
         console.log(location);
         if ($('#navbarDropdown').hasClass("able") == true) {
             drawDataTable(location);
-            // console.log("aa");
         }
     });
     renderDataTable();
@@ -14,7 +13,7 @@ $(document).ready(function () {
 
 function drawDataTable(location) {
 
-        var url = APP_URL + "/restaurant/" + location;
+        var url = APP_API_URL + "/restaurant/" + location;
         $.ajax({
             'type': "GET",
             'dataType': 'JSON',
@@ -30,7 +29,7 @@ function drawDataTable(location) {
 }
 
 function renderDataTable() {
-    var url = APP_URL + "/restaurant";
+    var url = APP_API_URL + "/restaurant";
     $.ajax({
         'type': "GET",
         'dataType': 'JSON',
@@ -77,7 +76,7 @@ function createRestaurantData(table){
         JsonData['rsName'] = $('#modalCreate_resRsName').val();
 
         $.ajax({
-            url: APP_URL + '/restaurant',
+            url: APP_API_URL + '/restaurant',
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             type: 'POST',
             data: JSON.stringify(JsonData),
@@ -141,7 +140,7 @@ function submitDataChange(view_row) {
 
 
             $.ajax({
-                url: APP_URL + '/restaurant/' + rsId,
+                url: APP_API_URL + '/restaurant/' + rsId,
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 type: 'PUT',
                 data: JSON.stringify(JsonData),
