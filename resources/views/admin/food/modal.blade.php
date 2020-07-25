@@ -462,7 +462,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" i>匯入食物資料EXCEL</h5>
-                <a href="http://qrfood.tw/admin/public/storage/example.xlsx">EXCEL格式</a>
+                <a href="http://qrfood.tw/admin/public/storage/example多筆匯入.xlsx">EXCEL格式</a>
             </div>
             <div class="modal-body">
                 <form id="form_create_excel" class="was-validated" action="" enctype="multipart/form-data">
@@ -538,6 +538,22 @@
                 <span class="" style="background-color: #f5c6cb;border-radius:3px; padding: 3px; font-weight: bold;">雙擊</span>
                 <span class="" style="background-color: #f5c6cb;border-radius:3px; padding: 3px; font-weight: bold;">狀態按鈕</span>
                 即可更改狀態
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="Modal_FailedMessage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" i>錯誤訊息</h5>
+            </div>
+            <div class="modal-body">
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

@@ -24,7 +24,16 @@ class FoodController extends Controller
     public function create(Request $request){
 
         $input = $request->all();
+
+        $messages = [
+            'required' => '此為必要欄位',
+            'numeric' => ':attribute 必須為數字',
+            'between' => ':attribute 必須介於 :min - :max',
+            'size' => ':attribute 必須在2MB以內',
+            'mimes' => ':attribute 必須為指定格式',
+        ];
 //        //檢查input是否合
+
         $validator = Validator::make($request->all(), [
             'rsId' => 'required|numeric',
             'fdName' => 'required',
@@ -43,31 +52,38 @@ class FoodController extends Controller
             'calcium' => 'required|numeric|between:0,9999.9999',
             'potassium' => 'required|numeric|between:0,9999.9999',
             'ferrum' => 'required|numeric|between:0,9999.9999',
-            'photo' => 'mimes:jpeg,bmp,png'
+            'photo' => 'required|mimes:jpeg,png|max:2048'
+        ],[
+            'required' => '此為必要欄位',
+            'numeric' => ':attribute 必須為數字',
+            'between' => ':attribute 必須介於 :min - :max',
+            'max' => ':attribute 必須在2MB以內',
+            'mimes' => ':attribute 必須為指定格式',
         ]);
         if ($validator->passes()) {
             $lastFdId = food::select('fdId')->orderBy('fdId','DESC')->first();
-//            $input['photo'] = 'http://localhost/upload/'.($lastFdId->fdId+1).".".$request->photo->getClientOriginalExtension();
-//            $destination="C:\\xampp\\htdocs\\upload"; //放置圖片的位址(絕對路徑)
+            //using in localhost
             $input['photo'] = ($lastFdId->fdId+1).".".$request->photo->getClientOriginalExtension();
-            $destination="C:\\xampp\\htdocs\\qrfood\\img"; //放置圖片的位址(絕對路徑)
+            $destination="C:\\xampp\\htdocs\\upload"; //放置圖片的位址(絕對路徑)
+            //using in production
+//            $input['photo'] = ($lastFdId->fdId+1).".".$request->photo->getClientOriginalExtension();
+//            $destination="C:\\xampp\\htdocs\\qrfood\\img"; //放置圖片的位址(絕對路徑)
             $request->photo->move($destination,$input['photo']);
             $input['disable'] = 0;
             $create = food::create($input);
             return response()->json([
-                'status' => '200',
+                'status' => '1',
                 'message' => 'create success',
                 'data' => $create,
                 ], 200);
         }else{
-//            return "aa";
             return response()->json([
-                'status' => '403',
-                'message' => 'Failed',
+                'status' => '0',
+                'message' => 'Valid Fail!',
                 'data' => [
-
+                    $validator->messages(),
                 ]
-            ], 400);
+            ], 200);
         }
     }
     public function createExcel(Request $request){
@@ -140,10 +156,12 @@ class FoodController extends Controller
                 "carbohydrate" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(11,$row)->getValue(),
                 "sugar" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(12,$row)->getValue(),
                 "dietaryFiber" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(13,$row)->getValue(),
-                "sodium" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(14,$row)->getValue(),
-                "calcium" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(15,$row)->getValue(),
-                "potassium" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(16,$row)->getValue(),
+
+                "calcium" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(14,$row)->getValue(),
+                "potassium" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(15,$row)->getValue(),
+                "sodium" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(16,$row)->getValue(),
                 "ferrum" => $spreadsheet->getActiveSheet()->getCellByColumnAndRow(17,$row)->getValue(),
+                
                 "disable" => 0,
                 "photo" => $imageName,
             ];

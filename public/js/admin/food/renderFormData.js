@@ -56,6 +56,7 @@ function create() {
         event.preventDefault();
     });
     $(document).on('click', '#btn_create_submit', function () {
+        console.log("click");
         var form = $('#form_create');
         if (form[0].checkValidity() === false) {
 
@@ -90,7 +91,8 @@ function create() {
                 contentType: false,
                 processData: false,
                 success: function (response) {
-                    if (response.status === '200') {
+                    console.log(response);
+                    if (response.status === '1') {
                         $data = response.data;
                         $data['rsName'] = $('#modal_create_rsId option:selected').text();
                         $data['cName'] = $('#modal_create_cId option:selected').text();
@@ -101,6 +103,13 @@ function create() {
                         datatable.draw(); // Redraw the DataTable
                         $('#Modal_create').modal('hide');
                         $('#Modal_success').modal('show');
+                    }else{
+                        $('#Modal_FailedMessage').modal('show');
+                        var message = "";
+                        for (var key in response.data[0]) {
+                            message += response.data[0][key] + "\n";
+                        }
+                        $('#Modal_FailedMessage .modal-body').html(message);
                     }
                 },
             });
@@ -169,7 +178,9 @@ function renderDataTable() {
                     },
                     {
                         render: function (data, type, row, meta) {
-                            return '<img class="column_image" style="height:50px;" src=' + "http://qrfood.tw/qrfood/img/" + row.photo + '>';
+                            // return '<img class="column_image" style="height:50px;" src=' + "http://qrfood.tw/qrfood/img/" + row.photo + '>';
+                            return '<img class="column_image" style="height:50px;" src=' + "http://localhost/upload/" + row.photo + '>';
+
                         }
                     },
                     {
