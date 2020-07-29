@@ -13,11 +13,93 @@ use App\food;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Exception;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Facades\JWTFactory;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserController extends Controller
 {
+    protected $user;
+    public function __construct()
+    {
+//        try{
+//            $this->user = JWTAuth::parseToken()->authenticate();
+//        }catch (JWTException $e){
+//            $this->user = "a";
+//        }
+
+    }
+    public function getUserInform(Request $request){
+        try{
+            $user =  JWTAuth::parseToken()->authenticate();
+            if($user == false){
+                return response()->json([
+                    'success' => false,
+                    'message' => '無此使用者',
+                ]);
+            }else{
+                return response()->json([
+                    'success' => true,
+                    'message' => "驗證成功",
+                    'data' => $user,
+                ]);
+            }
+
+        }catch (JWTException $e){
+            return response()->json([
+                'success' => false,
+                'message' => 'token格式錯誤',
+            ]);
+        }
+    }
+    public function login(Request $request)
+    {
+        $payload = JWTFactory::sub(123)->make();
+        $token = (string)JWTAuth::encode($payload);
+        return response()->json([
+            'token' => $token
+        ]);
+//        $credentials = $request->only('account','password');
+//        //valid
+//        $valid = Validator::make($credentials,[
+//           'account' => 'required',
+//           'password' => 'required',
+//        ]);
+//        //valid success
+//        if($valid->passes()){
+//            try {
+//                // attempt to verify the credentials and create a token for the user
+//                if (! $token = JWTAuth::attempt($credentials)) {
+//                    return response()->json([
+//                        'success' => false,
+//                        'message' => '帳號或密碼錯誤'
+//                    ], 401);
+//                }
+//            } catch (JWTException $e) {
+//                // something went wrong whilst attempting to encode the token
+//                return response()->json([
+//                    'success' => false,
+//                    'message' => 'token 不明原因無法生成'
+//                ], 500);
+//            }
+//            return response()->json([
+//                'success' => true,
+//                 'token' => $token,
+//            ]
+//                );
+//        }else{
+//            return response()->json([
+//                'success' => false,
+//               'message'=> '缺少參數',
+//            ]);
+//        }
+
+
+        // all good so return the token
+    }
     public function create(Request $request){
 
         $input = $request->all();

@@ -28,6 +28,20 @@ class UserTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
+            1 =>
+                array (
+                    'name' => '管理者',
+                    'email' => 'qrfood@gmail.com',
+                    'account' => 'qqq',
+                    'password' => Hash::make('qqq'),
+                    'gender' => 1,
+                    'role' => 1,
+                    'height' => 1.0,
+                    'weight' => 1.0,
+                    'exercise' => 1,
+                    'created_at' => NULL,
+                    'updated_at' => NULL,
+                ),
         ));
     }
 }
