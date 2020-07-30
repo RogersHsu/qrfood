@@ -12,17 +12,16 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::middleware('jwt')->group(function() {
+Route::middleware('auth.jwt')->group(function() {
     Route::get('/test','Admin\UserController@test');
+    Route::get('/userInform','Admin\UserController@getUserInform');
 
 });
-Route::get('/userInform','Admin\UserController@getUserInform');
 Route::POST('/login','Admin\UserController@login');
 
 //Route::get('/test','Admin\UserController@test');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    Route::get('/userInform','Admin\UserController@getUserInform');
+Route::middleware('auth.jwt')->group(function(){
 });
 Route::middleware(['admin', 'auth'])->group(function() {
     Route::get('/food','Admin\FoodController@showAll'); //顯示所有食物

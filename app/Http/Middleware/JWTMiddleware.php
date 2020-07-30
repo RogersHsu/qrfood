@@ -19,14 +19,16 @@ class JWTMiddleware
         try{
             if(JWTAuth::parseToken()->authenticate() == false){
                 return response()->json([
-                    'user' => 'no user',
+                    'success' => false,
+                    'message' => "無此使用者"
                 ]);
             }else{
                 return $next($request);
             }
         }catch (\Exception $e){
             return response()->json([
-               'error' => 'token error',
+                'success' => false,
+               'message' => '驗證錯誤',
             ]);
         }
     }
