@@ -21,7 +21,7 @@ class UserTableSeeder extends Seeder
                 'account' => 'qrfood',
                 'password' => Hash::make('123123'),
                 'gender' => 1,
-                'role' => 1,
+                'role' => 2,
                 'height' => 1.0,
                 'weight' => 1.0,
                 'exercise' => 1,
