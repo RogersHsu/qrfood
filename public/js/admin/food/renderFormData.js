@@ -133,7 +133,9 @@ function createSingleFood() {
                         $('#Modal_success').modal('show');
                         //clear input value
                         $('#form_create input[type=text]').val('');
-
+                        $('#modal_create_image').val('');
+                        $("#modal_create_image").siblings(".custom-file-label").addClass("selected").html('');
+                        $('#modal_create_previewImage').removeAttr('src');
                     }else{
                         $('#Modal_FailedMessage').modal('show');
                         var message = "";
@@ -235,17 +237,6 @@ function changeFoodStatus() {
         }
     });
 }
-
-/**
- * 打開「單筆新增」 清除上一筆新增的欄位資料
- */
-function cleanCreateViewData() {
-    //輸入內容淨空
-    $(document).on('click', '#btn_nav_create', function () {
-        $('#form_create input').val('');
-    });
-}
-
 /**
  * 打開 食物資料的彈跳視窗
  */

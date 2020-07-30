@@ -55,4 +55,5 @@ Route::middleware(['admin', 'auth'])->group(function() {
     Route::post('/user','Admin\UserController@create');
     Route::put('/user/{uId}', 'Admin\UserController@update');
     Route::delete('/user/{uId}', 'Admin\UserController@delete');
+
 });
