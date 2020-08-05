@@ -23,6 +23,7 @@ class AdminMiddleware
 
             // return redirect()->back()->withInput();
             // return redirect()->route('logout');
+            Auth::logout();
             return redirect()->route('login');
 
         }
