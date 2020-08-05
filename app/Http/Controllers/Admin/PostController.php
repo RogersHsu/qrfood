@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Picture;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
@@ -13,7 +14,7 @@ class PostController extends Controller
     public function getAllPosts(Request $request){
         $user =  JWTAuth::parseToken()->authenticate();
         $uId = $user->uId;
-        $posts = Post::where('uId',8)->orderBy('time','ASC')->get();
+        $posts = Post::where('uId',$uId)->orderBy('time','ASC')->get();
         //
         if(!$posts->isEmpty()){
             $array = [];
@@ -21,6 +22,7 @@ class PostController extends Controller
                 $object = new \stdClass;
                 $object->pId = $post->pId;
                 $object->subject = $post->subject;
+                $object->picture = Picture::where('pId',$post->pId)->get();
                 array_push($array,$object);
             }
             return response()->json([
@@ -33,9 +35,7 @@ class PostController extends Controller
                 "success" => true,
                 "message" => "No posts.",
                 "data" => [],
-
             ]);
         }
-
     }
 }
