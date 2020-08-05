@@ -14,6 +14,7 @@ class PostController extends Controller
         $user =  JWTAuth::parseToken()->authenticate();
         $uId = $user->uId;
         $posts = Post::where('uId',8)->orderBy('time','ASC')->get();
+        //
         if(!$posts->isEmpty()){
             $array = [];
             foreach ($posts as $post){
