@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 class CreateSuggestTable extends Migration {
 
@@ -30,8 +29,7 @@ class CreateSuggestTable extends Migration {
 			$table->float('calcium', 10, 0)->nullable()->comment('鈣(毫克)');
 			$table->float('potassium', 10, 0)->nullable()->comment('鉀(毫克)');
 			$table->float('ferrum', 10, 0)->nullable()->comment('鐵(毫克)');
-			$table->timestamp('created_at')->useCurrent();
-			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+			$table->timestamps();
 			$table->primary(['gender','exercise']);
 		});
 	}

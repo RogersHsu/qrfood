@@ -2,9 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
-class CreateDailyrecordTable extends Migration {
+class CreateFoodTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -13,11 +12,13 @@ class CreateDailyrecordTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('dailyrecord', function(Blueprint $table)
+		Schema::create('food', function(Blueprint $table)
 		{
-			$table->increments('sn')->comment('流水號');
-			$table->unsignedInteger('uId')->index('uId')->comment('使用者ID');
-			$table->date('date')->comment('日期');
+			$table->increments('fdId')->comment('食物ID');
+			$table->integer('rsId')->unsigned()->index('rsId')->comment('餐廳ID');
+			$table->string('fdName', 10)->comment('食物名稱');
+			$table->integer('cId')->unsigned()->index('cId')->comment('食物種類ID');
+			$table->float('gram', 10, 0)->nullable()->comment('克數');
 			$table->float('calorie', 10, 0)->nullable()->comment('熱量');
 			$table->float('protein', 10, 0)->nullable()->comment('蛋白質');
 			$table->float('fat', 10, 0)->nullable()->comment('脂肪(總)');
@@ -31,6 +32,9 @@ class CreateDailyrecordTable extends Migration {
 			$table->float('calcium', 10, 0)->nullable()->comment('鈣(毫克)');
 			$table->float('potassium', 10, 0)->nullable()->comment('鉀(毫克)');
 			$table->float('ferrum', 10, 0)->nullable()->comment('鐵(毫克)');
+			$table->string('photo', 100)->nullable()->comment('照片');
+			$table->boolean('disable');
+			$table->timestamps();
 		});
 	}
 
@@ -42,7 +46,7 @@ class CreateDailyrecordTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('dailyrecord');
+		Schema::drop('food');
 	}
 
 }
