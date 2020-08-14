@@ -15,9 +15,11 @@ use Illuminate\Http\Request;
 Route::middleware('auth.jwt')->group(function() {
     Route::get('/test','Admin\UserController@test');
     Route::get('/userInform','Admin\UserController@getUserInform');
-    Route::get('/posts','Admin\PostController@getAllPosts');
+    Route::get('/posts','Admin\PostController@show');
+    Route::POST('/post','Admin\PostController@create');
 
 });
+
 Route::POST('/login','Admin\UserController@login');
 
 //Route::get('/test','Admin\UserController@test');
