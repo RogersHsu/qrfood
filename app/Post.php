@@ -11,4 +11,8 @@ class Post extends Model
     protected $primaryKey = 'pId';
     public $timestamps = false;
 
+    public function picture()
+    {
+        return $this->hasOne('App\Picture');
+    }
 }

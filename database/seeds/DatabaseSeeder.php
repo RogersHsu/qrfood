@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
        $this->call(RestaurantTableSeeder::class);
        $this->call(FoodTableSeeder::class);
        $this->call(PostTableSeeder::class);
-
+       $this->call(PictureTableSeeder::class);
     }
    
 }

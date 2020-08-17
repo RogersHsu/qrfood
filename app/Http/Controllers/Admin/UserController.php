@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 use Carbon\Carbon;
+
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Facades\JWTFactory;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -24,18 +25,11 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 class UserController extends Controller
 {
     protected $user;
-    public function __construct()
-    {
-//        try{
-//            $this->user = JWTAuth::parseToken()->authenticate();
-//        }catch (JWTException $e){
-//            $this->user = "a";
-//        }
 
-    }
     public function test(Request $request){
         try{
-            $user =  JWTAuth::parseToken()->authenticate();
+            $user =  JWTAuth::parseToken()->getPayload();
+            return $user;
             if($user == false){
                 return response()->json([
                     'success' => false,
@@ -56,6 +50,7 @@ class UserController extends Controller
             ]);
         }
     }
+
     public function getUserInform(Request $request){
         try{
             $user =  JWTAuth::parseToken()->authenticate();
@@ -96,7 +91,8 @@ class UserController extends Controller
         if($valid->passes()){
             try {
                 // attempt to verify the credentials and create a token for the user
-                if (! $token = JWTAuth::attempt($credentials,['exp' => Carbon::now()->addDays(7)->timestamp])) {
+                JWTAuth::factory()->setTTL(10080); //min total:7days
+                if (! $token = JWTAuth::attempt($credentials)) {
                     return response()->json([
                         'success' => false,
                         'message' => '帳號或密碼錯誤'
