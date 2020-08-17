@@ -18,7 +18,7 @@ class PostTableSeeder extends Seeder
                 array (
                     'subject' => '早餐',
                     'context' => '很難吃',
-                    'uId' => '1',
+                    'uId' => '3',
                     'time' => '2020-08-05 14:27:35',
                     'rId' => null,
                     'is_public' => 1,
@@ -30,7 +30,7 @@ class PostTableSeeder extends Seeder
                 array (
                     'subject' => '午餐',
                     'context' => '非常難吃',
-                    'uId' => '1',
+                    'uId' => '3',
                     'time' => '2020-08-05 15:00:35',
                     'rId' => null,
                     'is_public' => 1,

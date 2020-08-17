@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Picture;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
@@ -22,8 +23,6 @@ class PostController extends Controller
             'context' => 'required|string',
             'location' => 'required|string',
         ]);
-        if($request->picture){
-
         if ($validator->passes()) {
             $post = new Post;
             $post->uId = $uId;
@@ -39,6 +38,10 @@ class PostController extends Controller
                     $data = substr($request->picture, strpos($request->picture, ',') + 1);
                     $data = base64_decode($data);
                     Storage::disk('img')->put($pId.".png", $data);
+                    $picture = new Picture();
+                    $picture->pId = $pId;
+                    $picture->url = 'http://localhost/qrfood/storage/app/picture/'.$pId.".png";
+                    $picture->save();
                 }
             }
 
@@ -46,7 +49,6 @@ class PostController extends Controller
                 "success" => true,
                 "message" => "新增成功!",
             ]);
-        }
 
         }else{
             return response()->json([
