@@ -9,4 +9,6 @@ class Picture extends Model
     //
     protected $table = 'picture';
     protected $primaryKey = 'id';
+    public $timestamps = false;
+
 }
