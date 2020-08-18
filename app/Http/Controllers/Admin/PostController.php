@@ -16,7 +16,7 @@ class PostController extends Controller
     /***
      * 建立一篇文章
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+      * @return \Illuminate\Http\JsonResponse
      */
     public function create(Request $request)
     {
@@ -74,6 +74,7 @@ class PostController extends Controller
             foreach ($posts as $post){
                 if($post->subject == null) break;
                 $object = new \stdClass;
+                $object->name = User::select('name')->where('uId',$post->uId)->get()[0]->name;
                 $object->pId = $post->pId;
                 $object->subject = $post->subject;
                 $picture = Picture::select('url')->where('pId',$post->pId)->get();
@@ -101,7 +102,7 @@ class PostController extends Controller
     }
 
     /***
-     * 取得特定文章內容
+     * 查看特定文章內容
      * @param $pId
      * @return \Illuminate\Http\JsonResponse
      */
@@ -121,6 +122,7 @@ class PostController extends Controller
             }
             $array = [];
             $object = new \stdClass();
+            $object->name = User::select('name')->where('uId',$post->uId)->get()[0]->name;
             $object->pId = $pId;
             $object->subject = $post->subject;
             if($picture->first()){
