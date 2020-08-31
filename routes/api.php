@@ -13,8 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 Route::middleware('auth.jwt')->group(function() {
-    Route::get('/test','Admin\UserController@test'); //test
-    Route::get('/userInform','Admin\UserController@getUserInform'); //test
     Route::get('/posts','Admin\PostController@show');
     Route::POST('/post','Admin\PostController@create');
     Route::GET('/posts/{pId}','Admin\PostController@getSpecPost');
@@ -22,7 +20,7 @@ Route::middleware('auth.jwt')->group(function() {
 });
 
 Route::POST('/login','Admin\UserController@login');
-
+Route::GET('/validJWT','Admin\UserController@validJWT');
 //Route::get('/test','Admin\UserController@test');
 
 Route::middleware('auth.jwt')->group(function(){

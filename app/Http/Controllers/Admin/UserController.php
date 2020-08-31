@@ -26,11 +26,10 @@ class UserController extends Controller
 {
     protected $user;
 
-    public function test(Request $request){
+    public function validJWT(Request $request){
         try{
-            $user =  JWTAuth::parseToken()->getPayload();
-            return $user;
-            if($user == false){
+            $auth =  JWTAuth::parseToken()->authenticate();
+            if($auth == false){
                 return response()->json([
                     'success' => false,
                     'message' => '無此使用者',
@@ -39,31 +38,7 @@ class UserController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => "驗證成功",
-                    'data' => $user,
-                ]);
-            }
-
-        }catch (JWTException $e){
-            return response()->json([
-                'success' => false,
-                'message' => 'token格式錯誤',
-            ]);
-        }
-    }
-
-    public function getUserInform(Request $request){
-        try{
-            $user =  JWTAuth::parseToken()->authenticate();
-            if($user == false){
-                return response()->json([
-                    'success' => false,
-                    'message' => '無此使用者',
-                ]);
-            }else{
-                return response()->json([
-                    'success' => true,
-                    'message' => "驗證成功",
-                    'data' => $user,
+                    'data' => $auth,
                 ]);
             }
 
