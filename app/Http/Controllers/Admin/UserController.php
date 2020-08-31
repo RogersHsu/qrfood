@@ -38,7 +38,6 @@ class UserController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => "驗證成功",
-                    'data' => $auth,
                 ]);
             }
 
