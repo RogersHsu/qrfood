@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
+
 
 class AdminMiddleware
 {
@@ -23,6 +25,7 @@ class AdminMiddleware
 
             // return redirect()->back()->withInput();
             // return redirect()->route('logout');
+            Auth()::logout();
             return redirect()->route('login');
 
         }
