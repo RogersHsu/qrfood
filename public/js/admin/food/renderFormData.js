@@ -39,7 +39,8 @@ function renderDataTable() {
                     {
                         render: function (data, type, row, meta) {
                             // return '<img class="column_image" style="height:50px;" src=' + "http://qrfood.tw/qrfood/img/" + row.photo + '>';
-                            return '<img class="column_image" style="height:50px;" src=' + "http://localhost/upload/" + row.photo + '>';
+                            // return '<img class="column_image" style="height:50px;" src=' + "http://localhost/upload/" + row.photo + '>';
+                            return '<img class="column_image" style="height:50px;" src=' + "http://localhost/qrfood/img/" + row.photo + '>';
 
                         }
                     },
