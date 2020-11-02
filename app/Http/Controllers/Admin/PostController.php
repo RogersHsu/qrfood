@@ -182,4 +182,28 @@ class PostController extends Controller
         }
 
     }
+
+    public function createComment(Request $request,$pId){
+
+        $uId =  JWTAuth::parseToken()->authenticate()->uId;
+        $validator = Validator::make($request->all(), [
+            'r_context' => 'required|string',
+        ]);
+        if ($validator->passes()) {
+            $post = new Post;
+            $post->r_context = $request->r_context;
+            $post->rId = $pId;
+            $post->uId = $uId;
+            $post->save();
+            return response()->json([
+                "success" => true,
+                "message" => "新增成功!",
+            ]);
+        }else{
+            return response()->json([
+                "success" => false,
+                "message" => "無內文",
+            ]);
+        }
+    }
 }

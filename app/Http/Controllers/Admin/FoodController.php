@@ -13,6 +13,8 @@ use App\category;
 use Validator;
 use Exception;
 use Illuminate\Support\Facades\Redirect;
+use ZipStream\File;
+
 class FoodController extends Controller
 {
 
@@ -88,13 +90,18 @@ class FoodController extends Controller
     }
     public function createExcel(Request $request){
         $excel = $request->excel;
+        $name = "111.".$excel->getClientOriginalExtension();
+//        return $excel->getCli entOriginalExtension();
+        $file = Storage::get('111.xlsx');
+        return $file->getClientOriginalExtension();
+//        return $file->getClientOriginalExtension();
+        Storage::disk('public')->put('eee/'.$name,file_get_contents($excel));
+        return "aa";
         $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader('Xlsx');
         $reader->setReadDataOnly(true);
         $reader->setReadEmptyCells(false);
         $spreadsheet = $reader->load($excel);
-
         $HighestRow = $spreadsheet->getActiveSheet()->getHighestRow();
-
         $array = array();
         $restaurant = restaurant::all();
         $category = category::all();

@@ -10,10 +10,12 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+use Illuminate\Http\Request;
 
 Route::get('/', 'HomeController@index');
-
+Route::post('/api', function (Request $request) {
+    return "Hello World!";
+});
 Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::POST('/login', 'Auth\LoginController@login');
 
