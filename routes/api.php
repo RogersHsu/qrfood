@@ -17,6 +17,7 @@ Route::middleware('auth.jwt')->group(function() {
     Route::POST('/post','Admin\PostController@create');
     Route::GET('/posts/{pId}','Admin\PostController@getSpecPost');
     Route::GET('user/posts','Admin\PostController@getUserPosts');
+    Route::POST('comment/{pId}','Admin\PostController@createComment');
 });
 
 Route::POST('/login','Admin\UserController@login');
@@ -25,10 +26,12 @@ Route::GET('/validJWT','Admin\UserController@validJWT');
 
 Route::middleware('auth.jwt')->group(function(){
 });
+
+Route::post('/food/excel','Admin\FoodController@createExcel');
+
 Route::middleware(['admin', 'auth'])->group(function() {
     Route::get('/food','Admin\FoodController@showAll'); //顯示所有食物
     Route::post('/food','Admin\FoodController@create');
-    Route::post('/food/excel','Admin\FoodController@createExcel');
     Route::get('/food/{rsName}','Admin\FoodController@showPatch');
 
     Route::post('/food/{fdId}/photo', 'Admin\FoodController@editPhoto');
