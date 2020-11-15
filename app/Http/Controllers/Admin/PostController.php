@@ -163,6 +163,8 @@ class PostController extends Controller
                 $object = new \stdClass;
                 $object->pId = $post->pId;
                 $object->subject = $post->subject;
+                $object->context = $post->context;
+                $object->time = $post->time;
                 if($picture->first()){
                     $object->picture = $picture[0]->url;
                 }else{
