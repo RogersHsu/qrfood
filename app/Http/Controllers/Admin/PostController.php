@@ -72,10 +72,11 @@ class PostController extends Controller
         if($posts->first()){
             $array = [];
             foreach ($posts as $post){
-                if($post->subject == null) break;
+                if($post->subject == null) continue;
                 $object = new \stdClass;
                 $object->name = User::select('name')->where('uId',$post->uId)->get()[0]->name;
                 $object->pId = $post->pId;
+                $object->time = $post->time;
                 $object->subject = $post->subject;
                 $picture = Picture::select('url')->where('pId',$post->pId)->get();
                 if($picture->first()){
