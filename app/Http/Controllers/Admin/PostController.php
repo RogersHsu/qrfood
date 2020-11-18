@@ -159,6 +159,7 @@ class PostController extends Controller
         if(!$posts->isEmpty()){
             $array = [];
             foreach ($posts as $post){
+                if($post->subject == null) continue;
                 $picture = Picture::select('url')->where('pId',$post->pId)->get();
                 $object = new \stdClass;
                 $object->pId = $post->pId;
